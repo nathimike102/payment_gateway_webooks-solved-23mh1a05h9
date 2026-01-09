@@ -6,6 +6,7 @@ const { initDatabase } = require('./init');
 // Import routes
 const healthRoutes = require('./routes/health');
 const orderRoutes = require('./routes/orders');
+const paymentRoutes = require('./routes/payments');
 const testRoutes = require('./routes/test');
 
 const app = express();
@@ -17,6 +18,7 @@ app.use(express.json());
 // Register routes
 app.use(healthRoutes);
 app.use(orderRoutes);
+app.use(paymentRoutes);
 app.use(testRoutes);
 
 async function startServer() {
