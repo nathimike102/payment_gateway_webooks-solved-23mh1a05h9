@@ -27,10 +27,19 @@ services:
     environment:
       DATABASE_URL: postgresql://gateway_user:gateway_pass@postgres:5432/payment_gateway
       PORT: 8000
+      TEST_MERCHANT_EMAIL: test@example.com
+      TEST_API_KEY: key_test_abc123
+      TEST_API_SECRET: secret_test_xyz789
+      UPI_SUCCESS_RATE: 0.90
+      CARD_SUCCESS_RATE: 0.95
+      PROCESSING_DELAY_MIN: 5000
+      PROCESSING_DELAY_MAX: 10000
+      TEST_MODE: ${TEST_MODE:-false}
+      TEST_PAYMENT_SUCCESS: ${TEST_PAYMENT_SUCCESS:-true}
+      TEST_PROCESSING_DELAY: ${TEST_PROCESSING_DELAY:-1000}
     depends_on:
       postgres:
         condition: service_healthy
-    restart: unless-stopped
 
   dashboard:
     build:
@@ -40,7 +49,6 @@ services:
       - "3000:80"
     depends_on:
       - api
-    restart: unless-stopped
 
   checkout:
     build:
@@ -50,7 +58,6 @@ services:
       - "3001:80"
     depends_on:
       - api
-    restart: unless-stopped
 
 volumes:
   postgres_data:
