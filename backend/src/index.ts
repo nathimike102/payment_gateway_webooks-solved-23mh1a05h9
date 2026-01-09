@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { initializeDatabase } from './init';
 import healthRouter from './routes/health';
 import ordersRouter from './routes/orders';
+import paymentsRouter from './routes/payments';
 import testRouter from './routes/test';
 
 dotenv.config();
@@ -18,6 +19,7 @@ app.use(express.json());
 // Routes
 app.use('/', healthRouter);
 app.use('/api/v1', ordersRouter);
+app.use('/api/v1', paymentsRouter);
 app.use('/api/v1', testRouter);
 
 // Placeholder route
