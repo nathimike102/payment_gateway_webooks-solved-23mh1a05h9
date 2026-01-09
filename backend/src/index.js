@@ -3,18 +3,21 @@ const express = require('express');
 const cors = require('cors');
 const { initDatabase } = require('./init');
 
+// Import routes
+const healthRoutes = require('./routes/health');
+const orderRoutes = require('./routes/orders');
+const testRoutes = require('./routes/test');
+
 const app = express();
 const PORT = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(express.json());
 
-// Routes will be added here
-
-// Health check placeholder
-app.get('/health', (req, res) => {
-    res.json({ status: 'healthy', database: 'connected', timestamp: new Date().toISOString() });
-});
+// Register routes
+app.use(healthRoutes);
+app.use(orderRoutes);
+app.use(testRoutes);
 
 async function startServer() {
     try {
