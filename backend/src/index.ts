@@ -2,6 +2,9 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { initializeDatabase } from './init';
+import healthRouter from './routes/health';
+import ordersRouter from './routes/orders';
+import testRouter from './routes/test';
 
 dotenv.config();
 
@@ -12,14 +15,10 @@ const PORT = process.env.PORT || 8000;
 app.use(cors());
 app.use(express.json());
 
-// Basic health check (will be enhanced later)
-app.get('/health', async (req, res) => {
-  res.json({
-    status: 'healthy',
-    database: 'connected',
-    timestamp: new Date().toISOString()
-  });
-});
+// Routes
+app.use('/', healthRouter);
+app.use('/api/v1', ordersRouter);
+app.use('/api/v1', testRouter);
 
 // Placeholder route
 app.get('/', (req, res) => {
