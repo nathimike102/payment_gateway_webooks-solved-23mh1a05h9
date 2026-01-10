@@ -134,7 +134,7 @@ const styles = {
     background: '#f5f5f5',
   },
   nav: {
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    background: '#0056b3',
     color: 'white',
     padding: '20px 40px',
     display: 'flex',

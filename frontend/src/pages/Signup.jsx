@@ -149,7 +149,7 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    background: '#0056b3',
     padding: '20px',
   },
   card: {
@@ -191,7 +191,7 @@ const styles = {
     fontSize: '16px',
     fontWeight: 'bold',
     color: 'white',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    background: '#ff8c00',
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
@@ -220,7 +220,7 @@ const styles = {
     color: '#666',
   },
   link: {
-    color: '#667eea',
+    color: '#ff8c00',
     textDecoration: 'none',
     fontWeight: 'bold',
     cursor: 'pointer',

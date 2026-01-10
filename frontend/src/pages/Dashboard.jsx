@@ -147,7 +147,7 @@ const styles = {
     background: '#f5f5f5',
   },
   nav: {
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    background: '#0056b3',
     color: 'white',
     padding: '20px 40px',
     display: 'flex',
@@ -210,7 +210,7 @@ const styles = {
   value: {
     fontSize: '16px',
     fontFamily: 'monospace',
-    color: '#667eea',
+    color: '#ff8c00',
     background: 'white',
     padding: '5px 10px',
     borderRadius: '4px',
@@ -224,12 +224,12 @@ const styles = {
     gap: '20px',
   },
   statCard: {
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    background: '#0056b3',
     color: 'white',
     padding: '30px',
     borderRadius: '10px',
     textAlign: 'center',
-    boxShadow: '0 4px 15px rgba(102, 126, 234, 0.3)',
+    boxShadow: '0 4px 15px rgba(0, 86, 179, 0.3)',
   },
   statLabel: {
     fontSize: '14px',
@@ -248,7 +248,7 @@ const styles = {
     fontSize: '16px',
     fontWeight: 'bold',
     color: 'white',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    background: '#ff8c00',
     border: 'none',
     borderRadius: '5px',
     cursor: 'pointer',
