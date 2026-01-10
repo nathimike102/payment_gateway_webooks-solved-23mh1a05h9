@@ -23,6 +23,7 @@ A payment gateway similar to Razorpay/Stripe with support for UPI and Card payme
 
 1. Clone the repository
 2. Run the application:
+
    ```bash
    docker-compose up -d
    ```
@@ -35,11 +36,13 @@ A payment gateway similar to Razorpay/Stripe with support for UPI and Card payme
 ## API Endpoints
 
 ### Health Check
+
 ```
 GET /health
 ```
 
 ### Orders
+
 ```
 POST /api/v1/orders
 GET /api/v1/orders/{order_id}
@@ -47,6 +50,7 @@ GET /api/v1/orders/{order_id}/public
 ```
 
 ### Payments
+
 ```
 POST /api/v1/payments
 GET /api/v1/payments/{payment_id}
@@ -54,6 +58,7 @@ POST /api/v1/payments/public
 ```
 
 ### Test
+
 ```
 GET /api/v1/test/merchant
 ```
@@ -67,6 +72,7 @@ GET /api/v1/test/merchant
 ## Development
 
 ### Backend
+
 ```bash
 cd backend
 npm install
@@ -74,6 +80,7 @@ npm start
 ```
 
 ### Frontend Dashboard
+
 ```bash
 cd frontend
 npm install
@@ -81,6 +88,7 @@ npm run dev
 ```
 
 ### Checkout Page
+
 ```bash
 cd checkout-page
 npm install
