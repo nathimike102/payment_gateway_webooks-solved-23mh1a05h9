@@ -22,12 +22,23 @@ function Transactions() {
 
   const fetchTransactions = async () => {
     try {
-      // Since we don't have a list all payments endpoint, we'll query the database differently
-      // For now, we'll show empty or use a workaround
-      // In production, you'd add a GET /api/v1/payments endpoint that lists all
-      setTransactions([])
+      const response = await fetch(`${API_URL}/api/v1/payments`, {
+        method: 'GET',
+        headers: {
+          'X-Api-Key': apiKey,
+          'X-Api-Secret': apiSecret,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch payments')
+      }
+
+      const data = await response.json()
+      setTransactions(data.payments || [])
     } catch (error) {
       console.error('Error fetching transactions:', error)
+      setTransactions([])
     } finally {
       setLoading(false)
     }

@@ -11,6 +11,61 @@ const {
 
 const router = express.Router();
 
+// Get all payments for merchant
+router.get('/api/v1/payments', authenticateApiKey, async (req, res) => {
+    try {
+        const { limit = 50, skip = 0 } = req.query;
+        
+        const result = await db.query(
+            `SELECT p.id, p.order_id, p.merchant_id, p.amount, p.currency, p.method, 
+                    p.status, p.vpa, p.card_network, p.card_last4, 
+                    p.error_code, p.error_description, p.created_at, p.updated_at,
+                    o.receipt
+             FROM payments p
+             LEFT JOIN orders o ON p.order_id = o.id
+             WHERE p.merchant_id = $1
+             ORDER BY p.created_at DESC
+             LIMIT $2 OFFSET $3`,
+            [req.merchant.id, parseInt(limit), parseInt(skip)]
+        );
+
+        const countResult = await db.query(
+            'SELECT COUNT(*) as total FROM payments WHERE merchant_id = $1',
+            [req.merchant.id]
+        );
+
+        res.json({
+            count: result.rows.length,
+            total: parseInt(countResult.rows[0].total),
+            payments: result.rows.map(payment => ({
+                id: payment.id,
+                order_id: payment.order_id,
+                merchant_id: payment.merchant_id,
+                amount: payment.amount,
+                currency: payment.currency,
+                method: payment.method,
+                status: payment.status,
+                vpa: payment.vpa,
+                card_network: payment.card_network,
+                card_last4: payment.card_last4,
+                error_code: payment.error_code,
+                error_description: payment.error_description,
+                created_at: payment.created_at,
+                updated_at: payment.updated_at,
+                receipt: payment.receipt
+            }))
+        });
+    } catch (error) {
+        console.error('Error fetching payments:', error);
+        res.status(500).json({
+            error: {
+                code: 'SERVER_ERROR',
+                description: 'Internal server error'
+            }
+        });
+    }
+});
+
 // Helper function to process payment
 async function processPayment(paymentId, method) {
     // Get configuration from environment

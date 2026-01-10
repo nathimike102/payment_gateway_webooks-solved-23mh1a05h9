@@ -5,6 +5,51 @@ const { generateOrderId } = require('../utils/idGenerator');
 
 const router = express.Router();
 
+// Get all orders for merchant
+router.get('/api/v1/orders', authenticateApiKey, async (req, res) => {
+    try {
+        const { limit = 50, skip = 0 } = req.query;
+        
+        const result = await db.query(
+            `SELECT id, merchant_id, amount, currency, receipt, notes, status, created_at, updated_at
+             FROM orders
+             WHERE merchant_id = $1
+             ORDER BY created_at DESC
+             LIMIT $2 OFFSET $3`,
+            [req.merchant.id, parseInt(limit), parseInt(skip)]
+        );
+
+        const countResult = await db.query(
+            'SELECT COUNT(*) as total FROM orders WHERE merchant_id = $1',
+            [req.merchant.id]
+        );
+
+        res.json({
+            count: result.rows.length,
+            total: parseInt(countResult.rows[0].total),
+            orders: result.rows.map(order => ({
+                id: order.id,
+                merchant_id: order.merchant_id,
+                amount: order.amount,
+                currency: order.currency,
+                receipt: order.receipt,
+                notes: order.notes,
+                status: order.status,
+                created_at: order.created_at,
+                updated_at: order.updated_at
+            }))
+        });
+    } catch (error) {
+        console.error('Error fetching orders:', error);
+        res.status(500).json({
+            error: {
+                code: 'SERVER_ERROR',
+                description: 'Internal server error'
+            }
+        });
+    }
+});
+
 // Create order
 router.post('/api/v1/orders', authenticateApiKey, async (req, res) => {
     try {
