@@ -1,0 +1,6 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build:all",
+  "installCommand": "npm install && npm run install:all",
+  "outputDirectory": "frontend/dist"
+}

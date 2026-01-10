@@ -1,0 +1,24 @@
+{
+  "name": "payment-gateway",
+  "version": "1.0.0",
+  "description": "Complete payment gateway system with multi-method processing",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm -C frontend run dev\" \"npm -C checkout-page run dev\" \"npm -C backend run dev\"",
+    "build:all": "npm -C frontend run build && npm -C checkout-page run build",
+    "build:frontend": "npm -C frontend run build",
+    "build:checkout": "npm -C checkout-page run build",
+    "start:backend": "npm -C backend start",
+    "install:all": "npm install && npm -C frontend install && npm -C checkout-page install && npm -C backend install"
+  },
+  "keywords": [
+    "payment-gateway",
+    "payments",
+    "upi",
+    "card",
+    "razorpay",
+    "stripe"
+  ],
+  "author": "Payment Gateway Team",
+  "license": "MIT"
+}
