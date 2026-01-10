@@ -5,15 +5,9 @@
     "NODE_ENV": "production"
   },
   "functions": {
-    "src/index.js": {
+    "api/index.js": {
       "maxDuration": 30,
       "memory": 1024
     }
-  },
-  "routes": [
-    {
-      "src": "/api/(.*)",
-      "dest": "src/index.js"
-    }
-  ]
+  }
 }
