@@ -64,19 +64,34 @@ function App() {
       setOrderLoading(true)
       setErrorMessage('')
       
-      // Create a demo order object for payment processing
-      const demoOrder = {
-        id: `demo_${Date.now()}`,
-        amount: Math.round(parseFloat(orderAmount) * 100), // Convert to paise
-        currency: 'INR',
-        status: 'created'
-      }
+      // Create a demo order in the database
+      const amountInPaise = Math.round(parseFloat(orderAmount) * 100)
       
-      setOrder(demoOrder)
-      setShowOrderForm(false)
-      setOrderLoading(false)
+      // Use a public endpoint to create demo order (no auth required)
+      const response = await fetch(`${API_URL}/api/v1/orders/create-demo`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: amountInPaise,
+          currency: 'INR'
+        })
+      })
+      
+      if (response.ok) {
+        const order = await response.json()
+        setOrder(order)
+        setShowOrderForm(false)
+        setOrderLoading(false)
+      } else {
+        const error = await response.json()
+        setErrorMessage(error.description || 'Failed to create order')
+        setOrderLoading(false)
+      }
     } catch (error) {
-      setErrorMessage('Failed to proceed')
+      console.error('Error:', error)
+      setErrorMessage('Failed to process request')
       setOrderLoading(false)
     }
   }

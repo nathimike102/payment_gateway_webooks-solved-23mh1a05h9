@@ -1,7 +1,61 @@
 const express = require('express');
 const pool = require('../config/database');
+const { generateOrderId } = require('../utils/idGenerator');
 
 const router = express.Router();
+
+// Create demo order (public - no auth required)
+router.post('/orders/create-demo', async (req, res) => {
+  try {
+    const { amount, currency } = req.body;
+
+    // Validate amount
+    if (!amount || typeof amount !== 'number' || amount < 100) {
+      return res.status(400).json({
+        error: {
+          code: 'BAD_REQUEST_ERROR',
+          description: 'amount must be at least 100 paise (₹1.00)'
+        }
+      });
+    }
+
+    // Generate unique order ID
+    let orderId = generateOrderId();
+    let exists = true;
+    while (exists) {
+      const check = await pool.query('SELECT id FROM orders WHERE id = $1', [orderId]);
+      if (check.rows.length === 0) {
+        exists = false;
+      } else {
+        orderId = generateOrderId();
+      }
+    }
+
+    // Create order without a merchant (demo order)
+    const result = await pool.query(
+      `INSERT INTO orders (id, merchant_id, amount, currency, status, created_at, updated_at)
+       VALUES ($1, $2, $3, $4, $5, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+       RETURNING id, amount, currency, status, created_at`,
+      [
+        orderId,
+        '550e8400-e29b-41d4-a716-446655440000', // Demo merchant ID
+        amount,
+        currency || 'INR',
+        'created'
+      ]
+    );
+
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error('Error creating demo order:', error);
+    res.status(500).json({
+      error: {
+        code: 'SERVER_ERROR',
+        description: 'Internal server error'
+      }
+    });
+  }
+});
 
 // Get order details (public - no auth required)
 router.get('/orders/:order_id/public', async (req, res) => {
