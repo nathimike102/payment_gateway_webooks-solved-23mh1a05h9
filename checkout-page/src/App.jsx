@@ -8,6 +8,11 @@ function App() {
   const [paymentState, setPaymentState] = useState('form') // form, processing, success, error
   const [paymentId, setPaymentId] = useState(null)
   const [errorMessage, setErrorMessage] = useState('')
+  const [orderLoading, setOrderLoading] = useState(false)
+  const [showOrderForm, setShowOrderForm] = useState(false)
+
+  // Order form
+  const [orderAmount, setOrderAmount] = useState('')
 
   // UPI form
   const [vpa, setVpa] = useState('')
@@ -24,18 +29,49 @@ function App() {
 
     if (orderId) {
       fetchOrder(orderId)
+    } else {
+      setShowOrderForm(true)
     }
   }, [])
 
   const fetchOrder = async (orderId) => {
     try {
+      setOrderLoading(true)
       const response = await fetch(`${API_URL}/api/v1/orders/${orderId}/public`)
       if (response.ok) {
         const data = await response.json()
         setOrder(data)
+      } else {
+        setErrorMessage('Order not found')
+        setShowOrderForm(true)
       }
     } catch (error) {
       console.error('Error fetching order:', error)
+      setShowOrderForm(true)
+    } finally {
+      setOrderLoading(false)
+    }
+  }
+
+  const handleCreateOrder = async (e) => {
+    e.preventDefault()
+    if (!orderAmount || orderAmount < 100) {
+      setErrorMessage('Amount must be at least ₹1.00')
+      return
+    }
+
+    try {
+      setOrderLoading(true)
+      setErrorMessage('')
+      
+      // Note: This requires merchant credentials, which the checkout page doesn't have
+      // In a real scenario, the merchant would create orders from their dashboard
+      // For now, show a message that order must be created from dashboard
+      setErrorMessage('Please create orders from the merchant dashboard and use the checkout link with order_id parameter')
+      setOrderLoading(false)
+    } catch (error) {
+      setErrorMessage('Failed to create order')
+      setOrderLoading(false)
     }
   }
 
@@ -166,6 +202,50 @@ function App() {
 
   const formatAmount = (amount) => {
     return `₹${(amount / 100).toFixed(2)}`
+  }
+
+  if (showOrderForm && !order) {
+    return (
+      <div style={styles.container}>
+        <div style={styles.checkoutContainer}>
+          <h1 style={styles.title}>Payment Checkout</h1>
+          <div style={styles.orderForm}>
+            <h2 style={styles.subtitle}>Enter Order Details</h2>
+            <form onSubmit={handleCreateOrder}>
+              <div style={styles.formGroup}>
+                <label style={styles.label}>Amount (in Rupees)</label>
+                <input
+                  type="number"
+                  min="1"
+                  step="0.01"
+                  placeholder="Enter amount (minimum ₹1.00)"
+                  value={orderAmount}
+                  onChange={(e) => setOrderAmount(e.target.value)}
+                  required
+                  disabled={orderLoading}
+                  style={styles.input}
+                />
+              </div>
+              {errorMessage && <div style={styles.errorBox}>{errorMessage}</div>}
+              <button 
+                type="submit" 
+                disabled={orderLoading || !orderAmount}
+                style={styles.button}
+              >
+                {orderLoading ? 'Processing...' : 'Proceed to Payment'}
+              </button>
+            </form>
+            <div style={styles.infoBox}>
+              <p><strong>ℹ️ How it works:</strong></p>
+              <p>Orders are created from the merchant dashboard. Share the checkout link with your customers:</p>
+              <code style={styles.code}>
+                http://localhost:3001/checkout?order_id=YOUR_ORDER_ID
+              </code>
+            </div>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   if (!order) {
@@ -514,6 +594,57 @@ const styles = {
     border: 'none',
     borderRadius: '8px',
     cursor: 'pointer',
+  },
+  orderForm: {
+    marginTop: '30px',
+  },
+  formGroup: {
+    marginBottom: '20px',
+  },
+  label: {
+    display: 'block',
+    marginBottom: '8px',
+    fontWeight: '600',
+    color: '#333',
+  },
+  input: {
+    width: '100%',
+    padding: '12px',
+    fontSize: '16px',
+    border: '1px solid #ddd',
+    borderRadius: '8px',
+    boxSizing: 'border-box',
+    outline: 'none',
+  },
+  errorBox: {
+    background: '#fff5f5',
+    border: '1px solid #feb2b2',
+    color: '#c53030',
+    padding: '12px',
+    borderRadius: '8px',
+    marginBottom: '15px',
+    fontSize: '14px',
+  },
+  infoBox: {
+    background: '#fffaf0',
+    border: '1px solid #fbd38d',
+    color: '#7c2d12',
+    padding: '15px',
+    borderRadius: '8px',
+    marginTop: '20px',
+    fontSize: '13px',
+    lineHeight: '1.6',
+  },
+  code: {
+    display: 'block',
+    background: '#f7fafc',
+    padding: '10px',
+    borderRadius: '5px',
+    marginTop: '10px',
+    fontSize: '12px',
+    fontFamily: 'monospace',
+    overflowWrap: 'break-word',
+    color: '#ff8c00',
   },
 }
 
