@@ -27,11 +27,6 @@ function Dashboard() {
 
   const fetchStats = async () => {
     try {
-      // Fetch merchant ID first
-      const merchantRes = await fetch(`${API_URL}/api/v1/test/merchant`)
-      const merchantData = await merchantRes.json()
-      const merchantId = merchantData.id
-
       // Fetch all payments for this merchant
       const response = await fetch(`${API_URL}/api/v1/payments`, {
         headers: {
@@ -41,11 +36,13 @@ function Dashboard() {
       })
 
       if (response.ok) {
-        const payments = await response.json()
+        const data = await response.json()
+        const payments = data.payments || data || []
         
         const totalTransactions = payments.length
         const successfulPayments = payments.filter(p => p.status === 'success')
-        const totalAmount = successfulPayments.reduce((sum, p) => sum + p.amount, 0)
+        // Sum amounts from all transactions (amounts are in paise)
+        const totalAmount = payments.reduce((sum, p) => sum + (p.amount || 0), 0)
         const successRate = totalTransactions > 0 
           ? ((successfulPayments.length / totalTransactions) * 100).toFixed(0)
           : 0
