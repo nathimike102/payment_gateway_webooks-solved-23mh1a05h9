@@ -2,6 +2,12 @@
 *.instructions.md
 instructions.pdf
 
+# Documentation for personal use only
+CHECKLIST.md
+TESTING.md
+PROJECT_STATUS.md
+validate.sh
+
 # Environment files
 .env
 
