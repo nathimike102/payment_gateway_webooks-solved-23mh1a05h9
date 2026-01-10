@@ -55,7 +55,7 @@ function App() {
 
   const handleCreateOrder = async (e) => {
     e.preventDefault()
-    if (!orderAmount || orderAmount < 100) {
+    if (!orderAmount || orderAmount < 1) {
       setErrorMessage('Amount must be at least ₹1.00')
       return
     }
@@ -64,13 +64,19 @@ function App() {
       setOrderLoading(true)
       setErrorMessage('')
       
-      // Note: This requires merchant credentials, which the checkout page doesn't have
-      // In a real scenario, the merchant would create orders from their dashboard
-      // For now, show a message that order must be created from dashboard
-      setErrorMessage('Please create orders from the merchant dashboard and use the checkout link with order_id parameter')
+      // Create a demo order object for payment processing
+      const demoOrder = {
+        id: `demo_${Date.now()}`,
+        amount: Math.round(parseFloat(orderAmount) * 100), // Convert to paise
+        currency: 'INR',
+        status: 'created'
+      }
+      
+      setOrder(demoOrder)
+      setShowOrderForm(false)
       setOrderLoading(false)
     } catch (error) {
-      setErrorMessage('Failed to create order')
+      setErrorMessage('Failed to proceed')
       setOrderLoading(false)
     }
   }
@@ -237,7 +243,7 @@ function App() {
             </form>
             <div style={styles.infoBox}>
               <p><strong>ℹ️ How it works:</strong></p>
-              <p>Orders are created from the merchant dashboard. Share the checkout link with your customers:</p>
+              <p>You can test payments directly here, or create orders from the merchant dashboard and share the checkout link:</p>
               <code style={styles.code}>
                 http://localhost:3001/checkout?order_id=YOUR_ORDER_ID
               </code>
