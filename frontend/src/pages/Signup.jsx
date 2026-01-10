@@ -3,42 +3,66 @@ import { useNavigate, Link } from 'react-router-dom'
 
 const API_URL = 'http://localhost:8000'
 
-function Login() {
+function Signup() {
+  const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setSuccess('')
     setLoading(true)
 
+    // Validate inputs
+    if (!name || !email || !password || !confirmPassword) {
+      setError('All fields are required')
+      setLoading(false)
+      return
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match')
+      setLoading(false)
+      return
+    }
+
+    if (password.length < 6) {
+      setError('Password must be at least 6 characters')
+      setLoading(false)
+      return
+    }
+
     try {
-      const response = await fetch(`${API_URL}/api/v1/auth/login`, {
+      const response = await fetch(`${API_URL}/api/v1/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          confirmPassword,
+        }),
       })
 
       const data = await response.json()
 
       if (!response.ok) {
-        setError(data.description || 'Login failed')
+        setError(data.description || 'Registration failed')
         return
       }
 
-      // Store merchant data
-      localStorage.setItem('merchantId', data.merchant.id)
-      localStorage.setItem('merchantEmail', data.merchant.email)
-      localStorage.setItem('merchantName', data.merchant.name)
-      localStorage.setItem('apiKey', data.merchant.apiKey)
-      localStorage.setItem('apiSecret', data.merchant.apiSecret)
-
-      navigate('/dashboard')
+      setSuccess('Registration successful! Redirecting to login...')
+      setTimeout(() => {
+        navigate('/login')
+      }, 2000)
     } catch (err) {
       setError('Network error. Please try again.')
       console.error(err)
@@ -51,11 +75,19 @@ function Login() {
     <div style={styles.container}>
       <div style={styles.card}>
         <h1 style={styles.title}>Payment Gateway</h1>
-        <h2 style={styles.subtitle}>Merchant Login</h2>
-        
-        <form data-test-id="login-form" onSubmit={handleSubmit} style={styles.form}>
+        <h2 style={styles.subtitle}>Merchant Registration</h2>
+
+        <form onSubmit={handleSubmit} style={styles.form}>
           <input
-            data-test-id="email-input"
+            type="text"
+            placeholder="Business Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+            disabled={loading}
+            style={styles.input}
+          />
+          <input
             type="email"
             placeholder="Email"
             value={email}
@@ -65,34 +97,46 @@ function Login() {
             style={styles.input}
           />
           <input
-            data-test-id="password-input"
             type="password"
-            placeholder="Password"
+            placeholder="Password (min 6 characters)"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             disabled={loading}
             style={styles.input}
           />
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+            disabled={loading}
+            style={styles.input}
+          />
           {error && <div style={styles.error}>{error}</div>}
-          <button 
-            data-test-id="login-button" 
-            type="submit" 
+          {success && <div style={styles.success}>{success}</div>}
+          <button
+            type="submit"
             style={styles.button}
             disabled={loading}
           >
-            {loading ? 'Logging in...' : 'Login'}
+            {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
-        <div style={styles.signupLink}>
-          Don't have an account? <Link to="/signup" style={styles.link}>Sign up here</Link>
+        <div style={styles.loginLink}>
+          Already have an account? <Link to="/login" style={styles.link}>Login here</Link>
         </div>
-        
-        <div style={styles.hint}>
-          <p><strong>Test Credentials:</strong></p>
-          <p>Email: test@example.com</p>
-          <p>Password: test123</p>
+
+        <div style={styles.info}>
+          <p><strong>What you'll get:</strong></p>
+          <ul style={styles.list}>
+            <li>Unique API Key & Secret for authentication</li>
+            <li>Access to payment processing dashboard</li>
+            <li>Real-time payment status tracking</li>
+            <li>Test mode for development</li>
+          </ul>
         </div>
       </div>
     </div>
@@ -106,6 +150,7 @@ const styles = {
     alignItems: 'center',
     justifyContent: 'center',
     background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    padding: '20px',
   },
   card: {
     background: 'white',
@@ -113,7 +158,7 @@ const styles = {
     borderRadius: '10px',
     boxShadow: '0 10px 40px rgba(0,0,0,0.1)',
     width: '100%',
-    maxWidth: '400px',
+    maxWidth: '450px',
   },
   title: {
     fontSize: '28px',
@@ -156,8 +201,19 @@ const styles = {
     color: '#e53e3e',
     fontSize: '14px',
     textAlign: 'center',
+    padding: '10px',
+    background: '#fff5f5',
+    borderRadius: '5px',
   },
-  signupLink: {
+  success: {
+    color: '#22543d',
+    fontSize: '14px',
+    textAlign: 'center',
+    padding: '10px',
+    background: '#f0fff4',
+    borderRadius: '5px',
+  },
+  loginLink: {
     marginTop: '15px',
     textAlign: 'center',
     fontSize: '14px',
@@ -169,15 +225,18 @@ const styles = {
     fontWeight: 'bold',
     cursor: 'pointer',
   },
-  hint: {
-    marginTop: '20px',
+  info: {
+    marginTop: '25px',
     padding: '15px',
     background: '#f7fafc',
     borderRadius: '5px',
-    fontSize: '14px',
+    fontSize: '13px',
     color: '#666',
-    textAlign: 'center',
+  },
+  list: {
+    margin: '10px 0 0 20px',
+    padding: 0,
   },
 }
 
-export default Login
+export default Signup
