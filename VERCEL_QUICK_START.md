@@ -4,7 +4,7 @@
 
 - Backend API configured for Vercel serverless functions
 - Frontend (Dashboard) optimized for Vercel
-- Checkout page optimized for Vercel  
+- Checkout page optimized for Vercel
 - All necessary configuration files in place
 - 37 meaningful git commits tracking the development
 
@@ -32,30 +32,33 @@ psql "YOUR_CONNECTION_STRING" < backend/schema.sql
 Go to https://vercel.com/dashboard and click "Add New..." → "Project"
 
 **Project 1: Dashboard**
+
 ```
-Name: payment-gateway
+Name: payment-gateway-h9
 Root: frontend
 Build: npm run build
-Env: VITE_API_URL=https://payment-gateway-api.vercel.app
+Env: VITE_API_URL=https://payment-gateway-api-h9.vercel.app
 ```
 
-**Project 2: Checkout** 
+**Project 2: Checkout**
+
 ```
-Name: payment-gateway-checkout
+Name: payment-gateway-checkout-h9
 Root: checkout-page
 Build: npm run build
-Env: VITE_API_URL=https://payment-gateway-api.vercel.app
+Env: VITE_API_URL=https://payment-gateway-api-h9.vercel.app
 ```
 
 **Project 3: Backend API**
+
 ```
-Name: payment-gateway-api
+Name: payment-gateway-api-h9
 Root: backend
 Build: npm install
-Env: 
+Env:
   DATABASE_URL=YOUR_DB_CONNECTION_STRING
   NODE_ENV=production
-  CORS_ORIGIN=https://payment-gateway.vercel.app,https://payment-gateway-checkout.vercel.app
+  CORS_ORIGIN=https://payment-gateway-h9.vercel.app,https://payment-gateway-checkout-h9.vercel.app
 ```
 
 ### Step 4: Redeploy Frontend (2 min)
@@ -64,7 +67,8 @@ After backend is deployed, redeploy frontend projects to pick up correct API URL
 
 ### Step 5: Test (1 min)
 
-Visit: https://payment-gateway.vercel.app
+Visit: https://payment-gateway-h9.vercel.app
+
 - Email: `test@example.com`
 - Password: `test123`
 
@@ -76,19 +80,19 @@ Visit: https://payment-gateway.vercel.app
 
 ## 🔗 Your Live URLs (After Deployment)
 
-- Dashboard: `https://payment-gateway.vercel.app`
-- Checkout: `https://payment-gateway-checkout.vercel.app`
-- API: `https://payment-gateway-api.vercel.app`
-- API Health: `https://payment-gateway-api.vercel.app/api/v1/health`
+- Dashboard: `https://payment-gateway-h9.vercel.app`
+- Checkout: `https://payment-gateway-checkout-h9.vercel.app`
+- API: `https://payment-gateway-api-h9.vercel.app`
+- API Health: `https://payment-gateway-api-h9.vercel.app/api/v1/health`
 
 ## 🆘 Common Issues
 
-| Issue | Solution |
-|-------|----------|
-| API returns 404 | Check DATABASE_URL is set in backend env vars |
-| Blank frontend | Check VITE_API_URL is set correctly, rebuild |
-| Payment fails | Check backend logs, verify database connection |
-| Database error | Verify connection string format, check firewall |
+| Issue           | Solution                                        |
+| --------------- | ----------------------------------------------- |
+| API returns 404 | Check DATABASE_URL is set in backend env vars   |
+| Blank frontend  | Check VITE_API_URL is set correctly, rebuild    |
+| Payment fails   | Check backend logs, verify database connection  |
+| Database error  | Verify connection string format, check firewall |
 
 ## 📞 Getting Help
 
