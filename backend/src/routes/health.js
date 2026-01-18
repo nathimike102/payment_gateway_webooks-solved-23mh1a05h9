@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('../db');
+const { webhookQueue, paymentQueue, refundQueue } = require('../queues');
 
 const router = express.Router();
 
@@ -20,6 +21,36 @@ router.get('/health', async (req, res) => {
             database: 'disconnected',
             timestamp: new Date().toISOString()
         });
+    }
+});
+
+router.get('/api/v1/queue/status', async (req, res) => {
+    try {
+        const stats = {
+            webhooks: {
+                waiting: await webhookQueue.getWaitingCount(),
+                active: await webhookQueue.getActiveCount(),
+                completed: await webhookQueue.getCompletedCount(),
+                failed: await webhookQueue.getFailedCount()
+            },
+            payments: {
+                waiting: await paymentQueue.getWaitingCount(),
+                active: await paymentQueue.getActiveCount(),
+                completed: await paymentQueue.getCompletedCount(),
+                failed: await paymentQueue.getFailedCount()
+            },
+            refunds: {
+                waiting: await refundQueue.getWaitingCount(),
+                active: await refundQueue.getActiveCount(),
+                completed: await refundQueue.getCompletedCount(),
+                failed: await refundQueue.getFailedCount()
+            }
+        };
+
+        res.json(stats);
+    } catch (error) {
+        console.error('Queue status check failed:', error);
+        res.status(500).json({ error: 'Queue status check failed' });
     }
 });
 

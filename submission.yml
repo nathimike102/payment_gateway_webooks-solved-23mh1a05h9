@@ -1,0 +1,43 @@
+# Payment Gateway Submission Configuration
+# This file contains all commands required for evaluation
+
+setup:
+  - npm install
+  - cd backend && npm install && cd ..
+  - cd frontend && npm install && cd ..
+  - cd checkout-page && npm install && cd ..
+
+start:
+  - docker-compose up -d
+
+test:
+  - docker-compose exec api npm test
+  - docker-compose exec frontend npm test
+
+verify:
+  - docker-compose exec api curl http://localhost:8000/health
+  - docker-compose exec api curl -H "X-Api-Key: key_test_abc123" -H "X-Api-Secret: secret_test_xyz789" http://localhost:8000/api/v1/payments
+  - docker-compose exec api curl http://localhost:8000/api/v1/queue/status
+  - docker-compose logs --tail=50 api
+  - docker-compose logs --tail=50 worker
+  - docker-compose logs --tail=50 redis
+
+shutdown:
+  - docker-compose down
+
+services:
+  api:
+    port: 8000
+    healthcheck: GET /health
+    
+  dashboard:
+    port: 3000
+    
+  checkout:
+    port: 3001
+    
+  redis:
+    port: 6379
+    
+  worker:
+    service: background job processor for async payment/webhook processing

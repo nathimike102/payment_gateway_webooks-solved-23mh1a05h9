@@ -8,6 +8,7 @@ const healthRoutes = require('./routes/health');
 const authRoutes = require('./routes/auth');
 const orderRoutes = require('./routes/orders');
 const paymentRoutes = require('./routes/payments');
+const refundRoutes = require('./routes/refunds');
 const testRoutes = require('./routes/test');
 const publicRoutes = require('./routes/public');
 
@@ -23,6 +24,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1', publicRoutes);
 app.use(orderRoutes);
 app.use(paymentRoutes);
+app.use(refundRoutes);
 app.use(testRoutes);
 
 async function startServer() {
