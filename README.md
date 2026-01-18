@@ -35,16 +35,19 @@ A production-ready payment gateway system featuring merchant onboarding, async p
 ### Installation & Running
 
 1. **Start all services (API, Worker, Dashboard, Checkout, Redis, PostgreSQL)**
+
    ```bash
    docker-compose up -d
    ```
 
 2. **Verify services are running**
+
    ```bash
    docker-compose ps
    ```
 
 3. **Check health**
+
    ```bash
    curl http://localhost:8000/health
    ```
@@ -55,6 +58,7 @@ A production-ready payment gateway system featuring merchant onboarding, async p
    ```
 
 The application will be available at:
+
 - **API**: http://localhost:8000
 - **Dashboard**: http://localhost:3000
 - **Checkout**: http://localhost:3001
@@ -88,11 +92,13 @@ TEST_API_SECRET=secret_test_xyz789
 ## API Documentation
 
 ### Base URL
+
 ```
 http://localhost:8000
 ```
 
 ### Test Credentials
+
 ```
 Email: test@example.com
 API Key: key_test_abc123
@@ -111,6 +117,7 @@ X-Api-Secret: your_api_secret
 ### Core Endpoints
 
 #### 1. Health Check
+
 ```http
 GET /health
 
@@ -123,6 +130,7 @@ Response:
 ```
 
 #### 2. Create Order
+
 ```http
 POST /api/v1/orders
 
@@ -153,11 +161,13 @@ Response:
 ```
 
 #### 3. Get Orders
+
 ```http
 GET /api/v1/orders?limit=50&skip=0
 ```
 
 #### 4. Create Payment (UPI)
+
 ```http
 POST /api/v1/payments
 
@@ -187,6 +197,7 @@ Response:
 ```
 
 #### 5. Create Payment (Card)
+
 ```http
 POST /api/v1/payments
 
@@ -223,11 +234,13 @@ Response:
 ```
 
 #### 6. Get Payments
+
 ```http
 GET /api/v1/payments?limit=50&skip=0
 ```
 
 #### 7. Get Payment
+
 ```http
 GET /api/v1/payments/{payment_id}
 ```
@@ -235,6 +248,7 @@ GET /api/v1/payments/{payment_id}
 ### Refund Endpoints
 
 #### 1. Create Refund
+
 ```http
 POST /api/v1/refunds
 
@@ -265,11 +279,13 @@ Response:
 ```
 
 #### 2. Get Refunds
+
 ```http
 GET /api/v1/refunds?limit=50&skip=0&payment_id=pay_xyz123abc
 ```
 
 #### 3. Get Refund
+
 ```http
 GET /api/v1/refunds/{refund_id}
 ```
@@ -277,6 +293,7 @@ GET /api/v1/refunds/{refund_id}
 ### Job Queue Status
 
 #### Get Queue Status
+
 ```http
 GET /api/v1/queue/status
 
@@ -308,6 +325,7 @@ Response:
 ### Webhook Configuration
 
 Merchants can configure their webhook URL via the dashboard. Webhooks are automatically triggered for:
+
 - `payment.created` - When a payment is created
 - `refund.created` - When a refund is created
 
@@ -332,14 +350,14 @@ Merchants can configure their webhook URL via the dashboard. Webhooks are automa
 All webhooks are signed with HMAC-SHA256. Verify the signature using:
 
 ```javascript
-const crypto = require('crypto');
+const crypto = require("crypto");
 
 function verifyWebhookSignature(payload, signature, apiSecret) {
   const expectedSignature = crypto
-    .createHmac('sha256', apiSecret)
+    .createHmac("sha256", apiSecret)
     .update(JSON.stringify(payload))
-    .digest('hex');
-  
+    .digest("hex");
+
   return signature === expectedSignature;
 }
 ```
@@ -355,27 +373,27 @@ function verifyWebhookSignature(payload, signature, apiSecret) {
 ### Example Webhook Handler
 
 ```javascript
-const express = require('express');
-const crypto = require('crypto');
+const express = require("express");
+const crypto = require("crypto");
 
-app.post('/webhook', (req, res) => {
-  const signature = req.headers['x-webhook-signature'];
+app.post("/webhook", (req, res) => {
+  const signature = req.headers["x-webhook-signature"];
   const payload = req.body;
-  
+
   // Verify signature
   const expectedSignature = crypto
-    .createHmac('sha256', 'your_api_secret')
+    .createHmac("sha256", "your_api_secret")
     .update(JSON.stringify(payload))
-    .digest('hex');
-  
+    .digest("hex");
+
   if (signature !== expectedSignature) {
-    return res.status(401).json({ error: 'Invalid signature' });
+    return res.status(401).json({ error: "Invalid signature" });
   }
-  
+
   // Process webhook
-  console.log('Event:', payload.event);
-  console.log('Payment ID:', payload.id);
-  
+  console.log("Event:", payload.event);
+  console.log("Payment ID:", payload.id);
+
   // Send 200 OK to acknowledge receipt
   res.json({ received: true });
 });
@@ -415,23 +433,23 @@ Body:
 
 ```javascript
 const gateway = new PaymentGateway({
-  apiKey: 'your_api_key',
-  apiSecret: 'your_api_secret',
-  baseUrl: 'http://localhost:8000'
+  apiKey: "your_api_key",
+  apiSecret: "your_api_secret",
+  baseUrl: "http://localhost:8000",
 });
 
 // Create order
 const order = await gateway.createOrder({
   amount: 50000,
-  currency: 'INR',
-  receipt: 'receipt_123'
+  currency: "INR",
+  receipt: "receipt_123",
 });
 
 // Process payment
 const payment = await gateway.createPayment({
   orderId: order.id,
-  method: 'upi',
-  vpa: 'user@paytm'
+  method: "upi",
+  vpa: "user@paytm",
 });
 ```
 
@@ -503,21 +521,27 @@ curl http://localhost:8000/api/v1/queue/status
 ## Database Schema
 
 ### Merchants
+
 - id (UUID), name, email, password_hash, api_key, api_secret, webhook_url, is_active, timestamps
 
 ### Orders
+
 - id (order_xxx), merchant_id, amount, currency, receipt, notes, status, timestamps
 
 ### Payments
+
 - id (pay_xxx), order_id, merchant_id, amount, currency, method, status, vpa, card_network, card_last4, error_code, error_description, timestamps
 
 ### Refunds (NEW)
+
 - id (refund_xxx), payment_id, order_id, merchant_id, amount, currency, reason, status, error_code, error_description, timestamps
 
 ### Webhook Logs (NEW)
+
 - id, merchant_id, event_type, payment_id, refund_id, order_id, status, attempt_count, max_attempts, next_retry_at, response_status, response_body, error_message, timestamps
 
 ### Idempotency Keys (NEW)
+
 - id, merchant_id, request_hash, response_status_code, response_body, created_at, expires_at
 
 ## Architecture
@@ -572,4 +596,3 @@ docker-compose logs -f worker
 ## License
 
 Educational project for Partnr Network Global Placement Program
-

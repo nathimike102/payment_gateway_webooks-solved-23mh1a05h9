@@ -177,6 +177,7 @@
 ## Key Components
 
 ### 1. API Server (src/index.js)
+
 - Express.js HTTP server on port 8000
 - Routes for orders, payments, refunds
 - Middleware for authentication and validation
@@ -184,17 +185,20 @@
 - CORS enabled for cross-origin requests
 
 ### 2. Database Layer (src/db.js)
+
 - PostgreSQL connection pool
 - Query execution with parameterized statements
 - Connection pooling (20 max connections)
 
 ### 3. Queue System (src/queues/index.js)
+
 - Bull queue for webhooks, payments, refunds
 - Redis as message broker
 - Exponential backoff retry strategy
 - Job cleanup on completion
 
 ### 4. Worker Service (src/worker.js)
+
 - Background job processor
 - Handles payment processing
 - Sends webhooks with HMAC signatures
@@ -202,11 +206,13 @@
 - Processes refunds asynchronously
 
 ### 5. Services
+
 - **webhooks.js**: Webhook enqueue, delivery, signature generation/verification
 - **idempotency.js**: Idempotency key validation and persistence
 - **auth.js**: API key authentication middleware
 
 ### 6. Frontend (React/Vite)
+
 - Dashboard: Transaction monitoring, statistics
 - Checkout: Payment processing interface
 - Login: Merchant authentication
@@ -215,16 +221,19 @@
 ## Database Schema
 
 ### Core Tables
+
 - **merchants**: Merchant accounts with API credentials
 - **orders**: Payment orders
 - **payments**: Payment transactions
 
 ### New Tables for Async Processing
+
 - **refunds**: Refund records with async status tracking
 - **webhook_logs**: Webhook delivery history and retry tracking
 - **idempotency_keys**: Request deduplication and response caching
 
 ### Indexes
+
 - merchant_id on orders, payments, refunds, webhook_logs
 - status on payments, refunds, webhook_logs
 - payment_id on refunds
