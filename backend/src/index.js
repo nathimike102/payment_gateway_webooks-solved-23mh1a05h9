@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const path = require('path');
 const cors = require('cors');
 const { initDatabase } = require('./init');
 
@@ -17,6 +18,9 @@ const PORT = process.env.PORT || 8000;
 
 app.use(cors());
 app.use(express.json());
+
+// Serve static files (SDK, etc.)
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Register routes
 app.use(healthRoutes);
