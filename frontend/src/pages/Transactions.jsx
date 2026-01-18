@@ -106,7 +106,7 @@ function Transactions() {
                     >
                       <td data-test-id="payment-id" style={styles.td}>{txn.id}</td>
                       <td data-test-id="order-id" style={styles.td}>{txn.order_id}</td>
-                      <td data-test-id="amount" style={styles.td}>{txn.amount}</td>
+                      <td data-test-id="amount" style={styles.td}>{formatAmount(txn.amount)}</td>
                       <td data-test-id="method" style={styles.td}>{txn.method}</td>
                       <td data-test-id="status" style={styles.td}>
                         <span style={{ ...styles.badge, ...getStatusStyle(txn.status) }}>

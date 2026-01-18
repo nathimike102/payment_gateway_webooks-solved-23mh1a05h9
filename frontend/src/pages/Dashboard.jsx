@@ -129,9 +129,20 @@ function Dashboard() {
             </div>
           </div>
 
-          <Link to="/dashboard/transactions" style={styles.link}>
-            <button style={styles.button}>View All Transactions</button>
-          </Link>
+          <div style={styles.buttonGroup}>
+            <Link to="/dashboard/transactions" style={styles.link}>
+              <button style={styles.button}>View All Transactions</button>
+            </Link>
+            <Link to="/dashboard/webhooks" style={styles.link}>
+              <button style={styles.button}>Webhook Configuration</button>
+            </Link>
+            <Link to="/dashboard/refunds" style={styles.link}>
+              <button style={styles.button}>Refund Management</button>
+            </Link>
+            <Link to="/dashboard/docs" style={styles.link}>
+              <button style={styles.button}>API Documentation</button>
+            </Link>
+          </div>
         </div>
       </div>
     </div>
@@ -239,6 +250,12 @@ const styles = {
   },
   link: {
     textDecoration: 'none',
+  },
+  buttonGroup: {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+    gap: '15px',
+    marginTop: '30px',
   },
   button: {
     padding: '12px 30px',
