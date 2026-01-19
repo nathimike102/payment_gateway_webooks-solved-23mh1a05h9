@@ -81,14 +81,5 @@ services:
     depends_on:
       - api
 
-  checkout:
-    build:
-      context: ./checkout-page
-    container_name: gateway_checkout
-    ports:
-      - "3001:80"
-    depends_on:
-      - api
-
 volumes:
   postgres_data:

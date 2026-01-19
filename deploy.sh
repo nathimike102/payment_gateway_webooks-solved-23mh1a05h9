@@ -55,11 +55,6 @@ echo "📋 Step 2: Deploy Dashboard"
 echo "============================="
 deploy_project "payment-gateway" "frontend"
 
-# Deploy checkout page
-echo "📋 Step 3: Deploy Checkout Page"
-echo "================================"
-deploy_project "payment-gateway-checkout" "checkout-page"
-
 echo ""
 echo "✅ Deployment complete!"
 echo ""
