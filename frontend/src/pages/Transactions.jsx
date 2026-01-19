@@ -6,7 +6,9 @@ import './Transactions.css'
 
 function Transactions() {
   const [transactions, setTransactions] = useState([])
+  const [refunds, setRefunds] = useState([])
   const [loading, setLoading] = useState(true)
+  const [loadingRefunds, setLoadingRefunds] = useState(true)
   const navigate = useNavigate()
 
   const apiKey = localStorage.getItem('apiKey')
@@ -19,6 +21,7 @@ function Transactions() {
     }
 
     fetchTransactions()
+    fetchRefunds()
   }, [])
 
   const fetchTransactions = async () => {
@@ -45,6 +48,30 @@ function Transactions() {
     }
   }
 
+  const fetchRefunds = async () => {
+    try {
+      const response = await fetch(`${API_URL}/api/v1/refunds`, {
+        method: 'GET',
+        headers: {
+          'X-Api-Key': apiKey,
+          'X-Api-Secret': apiSecret,
+        },
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch refunds')
+      }
+
+      const data = await response.json()
+      setRefunds(data.refunds || [])
+    } catch (error) {
+      console.error('Error fetching refunds:', error)
+      setRefunds([])
+    } finally {
+      setLoadingRefunds(false)
+    }
+  }
+
   const formatAmount = (amount) => {
     return `₹${(amount / 100).toFixed(2)}`
   }
@@ -62,6 +89,8 @@ function Transactions() {
         return 'failed'
       case 'processing':
         return 'processing'
+      case 'processed':
+        return 'success'
       default:
         return 'default'
     }
@@ -72,7 +101,7 @@ function Transactions() {
       <nav className="transactions-nav">
         <h1 className="transactions-nav-title">Payment Gateway Dashboard</h1>
         <Link to="/dashboard" className="transactions-back-link">
-          <button className="transactions-back-btn">← Back to Dashboard</button>
+          <button className="back-button">← Back to Dashboard</button>
         </Link>
       </nav>
 
@@ -124,6 +153,47 @@ function Transactions() {
                       <td data-test-id="created-at">
                         {formatDate(txn.created_at)}
                       </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+
+        <div className="transactions-card" style={{ marginTop: '24px' }}>
+          <h2 className="transactions-heading">Refund Transactions</h2>
+          {loadingRefunds ? (
+            <p className="transactions-loading">Loading refunds...</p>
+          ) : refunds.length === 0 ? (
+            <p className="transactions-no-data">No refunds yet. Create a refund to see it tracked here.</p>
+          ) : (
+            <div className="transactions-table-container">
+              <table className="transactions-table">
+                <thead>
+                  <tr>
+                    <th>Refund ID</th>
+                    <th>Payment ID</th>
+                    <th>Amount</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Created</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {refunds.map((refund) => (
+                    <tr key={refund.id}>
+                      <td>{refund.id}</td>
+                      <td>{refund.payment_id}</td>
+                      <td>{formatAmount(refund.amount)}</td>
+                      <td>{refund.reason}</td>
+                      <td>
+                        <span className={`transactions-badge transactions-badge-${getStatusStyle(refund.status)}`}
+                          style={{ background: '#3b82f6', color: 'white' }}>
+                          {refund.status}
+                        </span>
+                      </td>
+                      <td>{formatDate(refund.created_at)}</td>
                     </tr>
                   ))}
                 </tbody>
