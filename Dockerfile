@@ -40,4 +40,4 @@ ENV PORT=3000
 EXPOSE 3000
 
 # Start the API server (which will serve the frontend as static files)
-CMD ["npm", "--prefix", "backend", "start"]
+CMD ["node", "backend/src/index.js"]
