@@ -9,7 +9,7 @@
     "build:frontend": "npm -C frontend run build",
     "build:checkout": "npm -C checkout-page run build",
     "start:backend": "npm -C backend start",
-    "install:all": "npm install && npm -C frontend install && npm -C checkout-page install && npm -C backend install"
+    "install:all": "npm install && npm -C frontend install && npm -C backend install"
   },
   "keywords": [
     "payment-gateway",

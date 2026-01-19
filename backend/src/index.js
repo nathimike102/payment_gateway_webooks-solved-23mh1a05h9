@@ -23,6 +23,10 @@ app.use(express.json());
 // Serve static files (SDK, etc.)
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// Serve frontend (for Vercel deployment)
+const frontendDist = path.join(__dirname, '..', '..', 'frontend', 'dist');
+app.use(express.static(frontendDist));
+
 // Register routes
 app.use(healthRoutes);
 app.use('/api/v1/auth', authRoutes);
@@ -32,6 +36,16 @@ app.use(paymentRoutes);
 app.use(refundRoutes);
 app.use(testRoutes);
 app.use(webhookRoutes);
+
+// SPA fallback: serve index.html for all non-API routes
+app.get('*', (req, res) => {
+    const indexPath = path.join(__dirname, '..', '..', 'frontend', 'dist', 'index.html');
+    res.sendFile(indexPath, (err) => {
+        if (err) {
+            res.status(404).json({ error: 'Not Found' });
+        }
+    });
+});
 
 async function startServer() {
     try {

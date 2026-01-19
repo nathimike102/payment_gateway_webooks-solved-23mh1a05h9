@@ -1,6 +1,15 @@
 {
   "version": 2,
-  "buildCommand": "npm run build:all",
-  "installCommand": "npm install && npm run install:all",
-  "outputDirectory": "frontend/dist"
+  "builds": [
+    {
+      "src": "Dockerfile",
+      "use": "@vercel/docker"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/$1"
+    }
+  ]
 }
