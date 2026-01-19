@@ -9,6 +9,8 @@ function Dashboard() {
     totalTransactions: 0,
     totalAmount: 0,
     successRate: 0,
+    refundCount: 0,
+    refundAmount: 0,
   })
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
@@ -28,45 +30,51 @@ function Dashboard() {
 
   const fetchStats = async () => {
     try {
-      // Fetch all payments for this merchant
-      const response = await fetch(`${API_URL}/api/v1/payments`, {
-        headers: {
-          'X-Api-Key': apiKey,
-          'X-Api-Secret': apiSecret,
-        },
+      const [paymentsRes, refundsRes] = await Promise.all([
+        fetch(`${API_URL}/api/v1/payments`, {
+          headers: {
+            'X-Api-Key': apiKey,
+            'X-Api-Secret': apiSecret,
+          },
+        }),
+        fetch(`${API_URL}/api/v1/refunds`, {
+          headers: {
+            'X-Api-Key': apiKey,
+            'X-Api-Secret': apiSecret,
+          },
+        }),
+      ])
+
+      const paymentsData = paymentsRes.ok ? await paymentsRes.json() : { payments: [] }
+      const refundsData = refundsRes.ok ? await refundsRes.json() : { refunds: [] }
+
+      const payments = paymentsData.payments || []
+      const refunds = refundsData.refunds || []
+
+      const totalPaymentAmount = payments.reduce((sum, p) => sum + (p.amount || 0), 0)
+      const totalRefundAmount = refunds.reduce((sum, r) => sum + (r.amount || 0), 0)
+
+      const totalTransactions = payments.length + refunds.length
+      const successfulPayments = payments.filter((p) => p.status === 'success')
+      const successRate = payments.length > 0
+        ? ((successfulPayments.length / payments.length) * 100).toFixed(0)
+        : 0
+
+      setStats({
+        totalTransactions,
+        totalAmount: Math.max(totalPaymentAmount - totalRefundAmount, 0),
+        successRate,
+        refundCount: refunds.length,
+        refundAmount: totalRefundAmount,
       })
-
-      if (response.ok) {
-        const data = await response.json()
-        const payments = data.payments || data || []
-        
-        const totalTransactions = payments.length
-        const successfulPayments = payments.filter(p => p.status === 'success')
-        // Sum amounts from all transactions (amounts are in paise)
-        const totalAmount = payments.reduce((sum, p) => sum + (p.amount || 0), 0)
-        const successRate = totalTransactions > 0 
-          ? ((successfulPayments.length / totalTransactions) * 100).toFixed(0)
-          : 0
-
-        setStats({
-          totalTransactions,
-          totalAmount,
-          successRate,
-        })
-      } else {
-        // If endpoint doesn't exist or no data, use defaults
-        setStats({
-          totalTransactions: 0,
-          totalAmount: 0,
-          successRate: 0,
-        })
-      }
     } catch (error) {
       console.error('Error fetching stats:', error)
       setStats({
         totalTransactions: 0,
         totalAmount: 0,
         successRate: 0,
+        refundCount: 0,
+        refundAmount: 0,
       })
     } finally {
       setLoading(false)
@@ -127,6 +135,18 @@ function Dashboard() {
                   {loading ? '...' : `${stats.successRate}%`}
                 </div>
               </div>
+              <div className="dashboard-stat-card">
+                <div className="dashboard-stat-label">Total Refunds</div>
+                <div className="dashboard-stat-value">
+                  {loading ? '...' : stats.refundCount}
+                </div>
+              </div>
+              <div className="dashboard-stat-card">
+                <div className="dashboard-stat-label">Refunded Amount</div>
+                <div className="dashboard-stat-value">
+                  {loading ? '...' : formatAmount(stats.refundAmount)}
+                </div>
+              </div>
             </div>
           </div>
 
@@ -140,8 +160,8 @@ function Dashboard() {
             <Link to="/dashboard/refunds" className="dashboard-link">
               <button className="dashboard-button">Refund Management</button>
             </Link>
-            <Link to="/dashboard/docs" className="dashboard-link">
-              <button className="dashboard-button">API Documentation</button>
+            <Link to="/dashboard/checkout" className="dashboard-link">
+              <button className="dashboard-button">Payment Checkout</button>
             </Link>
           </div>
         </div>
