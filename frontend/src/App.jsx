@@ -4,6 +4,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Dashboard from './pages/Dashboard'
 import Transactions from './pages/Transactions'
+import Checkout from './pages/Checkout'
 import { API_URL } from './config'
 import './App.css'
 
@@ -106,15 +107,13 @@ function WebhookConfig() {
 
   return (
     <div className="page-container">
+      <nav className="subnav">
+        <h1 className="subnav-title">Payment Gateway Dashboard</h1>
+        <button onClick={() => navigate('/dashboard')} className="back-button">← Back to Dashboard</button>
+      </nav>
       <div className="page-content">
         <div className="page-header">
           <div>
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="chip chip-muted"
-            >
-              ← Back to Dashboard
-            </button>
             <h1 className="page-title">Webhook Control Center</h1>
             <p className="page-description">
               Configure your delivery URL, monitor queue health, and inspect recent webhook attempts.
@@ -227,11 +226,11 @@ function WebhookConfig() {
             <div className="section-title">Verify signatures</div>
             <div className="section-subtitle">Use API secret to validate X-Webhook-Signature.</div>
             <pre className="code-block">
-{`const crypto = require('crypto');
-const valid = crypto
-  .createHmac('sha256', apiSecret)
-  .update(JSON.stringify(body))
-  .digest('hex') === req.headers['x-webhook-signature'];`}
+              {`const crypto = require('crypto');
+              const valid = crypto
+                .createHmac('sha256', apiSecret)
+                .update(JSON.stringify(body))
+                .digest('hex') === req.headers['x-webhook-signature'];`}
             </pre>
           </div>
           <div className="card">
@@ -331,15 +330,13 @@ function RefundManagement() {
 
   return (
     <div className="page-container">
+      <nav className="subnav">
+        <h1 className="subnav-title">Payment Gateway Dashboard</h1>
+        <button onClick={() => navigate('/dashboard')} className="back-button">← Back to Dashboard</button>
+      </nav>
       <div className="page-content">
         <div className="page-header">
           <div>
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="chip chip-muted"
-            >
-              ← Back to Dashboard
-            </button>
             <h1 className="page-title">Refund Desk</h1>
             <p className="page-description">
               Create refunds, monitor status, and keep customers in the loop.
@@ -473,15 +470,13 @@ function ApiDocumentation() {
 
   return (
     <div className="page-container">
+      <nav className="subnav">
+        <h1 className="subnav-title">Payment Gateway Dashboard</h1>
+        <button onClick={() => navigate('/dashboard')} className="back-button">← Back to Dashboard</button>
+      </nav>
       <div className="page-content" style={{ maxWidth: '1100px' }}>
         <div className="page-header">
           <div>
-            <button
-              onClick={() => navigate('/dashboard')}
-              className="chip chip-muted"
-            >
-              ← Back to Dashboard
-            </button>
             <h1 className="page-title">API Launchpad</h1>
             <p className="page-description">
               Core flows, required headers, and sample requests to get you live quickly.
@@ -541,6 +536,7 @@ function App() {
       <Route path="/dashboard/transactions" element={<Transactions />} />
       <Route path="/dashboard/webhooks" element={<WebhookConfig />} />
       <Route path="/dashboard/refunds" element={<RefundManagement />} />
+      <Route path="/dashboard/checkout" element={<Checkout />} />
       <Route path="/dashboard/docs" element={<ApiDocumentation />} />
       <Route path="/" element={<Navigate to="/login" replace />} />
     </Routes>
