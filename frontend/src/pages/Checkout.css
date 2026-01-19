@@ -200,7 +200,7 @@
   margin: 0 0 12px 0;
 }
 
-.checkout-submit .checkout-pay{
+.checkout-submit, .checkout-pay{
   padding: 15px 20px;
   border: none;
   border-radius: 10px;
@@ -227,7 +227,7 @@
   transform: none;
 }
 
-.checkout-submit{
+.checkout-submit {
   background: linear-gradient(90deg, #0ea5e9, var(--accent));
 }
 .checkout-pay {
