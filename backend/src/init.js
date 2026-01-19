@@ -13,8 +13,13 @@ async function initDatabase() {
         
         console.log('Database initialized successfully');
     } catch (error) {
-        console.error('Database initialization failed:', error);
-        throw error;
+        // Ignore if schema already exists (table already exists error)
+        if (error.message && error.message.includes('already exists')) {
+            console.log('Database already initialized, skipping schema creation');
+        } else {
+            console.error('Database initialization failed:', error);
+            throw error;
+        }
     }
 }
 
