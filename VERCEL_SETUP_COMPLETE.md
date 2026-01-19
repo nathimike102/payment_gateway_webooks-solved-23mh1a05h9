@@ -1,6 +1,7 @@
 # Vercel Production Setup - Final Steps
 
 ## Status
+
 ✅ Deployment: Live at https://payment-gateway-h9.vercel.app  
 ✅ PostgreSQL: Connected (Neon)  
 ✅ Redis: Connected (Upstash)
@@ -8,12 +9,14 @@
 ## Credentials
 
 ### Database (Neon)
+
 ```
 Connection: postgresql://neondb_owner:npg_kW34ztLTHmNf@ep-shy-rain-a7ryhy0v-pooler.ap-southeast-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
 Region: ap-southeast-2
 ```
 
 ### Redis (Upstash)
+
 ```
 Connection: redis://default:ATlJAAIncDE3NTk4OGFmODZhNDk0MTQ3OTRhM2ExOTFlMWZjMGYyNXAxMTQ2NjU@fluent-lobster-14665.upstash.io:6379
 ```
@@ -25,19 +28,20 @@ Connection: redis://default:ATlJAAIncDE3NTk4OGFmODZhNDk0MTQ3OTRhM2ExOTFlMWZjMGYy
 
 2. **Add Environment Variables** (for Production):
 
-| Variable | Value |
-|----------|-------|
-| `DATABASE_URL` | `postgresql://neondb_owner:npg_kW34ztLTHmNf@ep-shy-rain-a7ryhy0v-pooler.ap-southeast-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require` |
-| `REDIS_URL` | `redis://default:ATlJAAIncDE3NTk4OGFmODZhNDk0MTQ3OTRhM2ExOTFlMWZjMGYyNXAxMTQ2NjU@fluent-lobster-14665.upstash.io:6379` |
-| `NODE_ENV` | `production` |
-| `TEST_MODE` | `false` |
-| `TEST_PAYMENT_SUCCESS` | `true` |
-| `TEST_PROCESSING_DELAY` | `1000` |
-| `TEST_MERCHANT_EMAIL` | `test@example.com` |
-| `TEST_API_KEY` | `key_test_abc123` |
-| `TEST_API_SECRET` | `secret_test_xyz789` |
+| Variable                | Value                                                                                                                                                |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DATABASE_URL`          | `postgresql://neondb_owner:npg_kW34ztLTHmNf@ep-shy-rain-a7ryhy0v-pooler.ap-southeast-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require` |
+| `REDIS_URL`             | `redis://default:ATlJAAIncDE3NTk4OGFmODZhNDk0MTQ3OTRhM2ExOTFlMWZjMGYyNXAxMTQ2NjU@fluent-lobster-14665.upstash.io:6379`                               |
+| `NODE_ENV`              | `production`                                                                                                                                         |
+| `TEST_MODE`             | `false`                                                                                                                                              |
+| `TEST_PAYMENT_SUCCESS`  | `true`                                                                                                                                               |
+| `TEST_PROCESSING_DELAY` | `1000`                                                                                                                                               |
+| `TEST_MERCHANT_EMAIL`   | `test@example.com`                                                                                                                                   |
+| `TEST_API_KEY`          | `key_test_abc123`                                                                                                                                    |
+| `TEST_API_SECRET`       | `secret_test_xyz789`                                                                                                                                 |
 
 3. **Redeploy**
+
    ```bash
    vercel deploy --prod
    ```

@@ -60,3 +60,4 @@ build/
 *.tmp
 *.temp
 .cache/
+.vercel

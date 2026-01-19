@@ -84,18 +84,8 @@
     │   - Transactions         │                           │
     │   - Webhook Logs (NEW)   │                           │
     │   - Webhook Config       │                           │
+    │   - Checkout (embedded)  │                           │
     └──────────────────────────┘                           │
-                                                           │
-    ┌──────────────────────────┐                          │
-    │   CUSTOMER CHECKOUT      │                          │
-    │   (React/Vite)           │                          │
-    │   (Port 3001)            │                          │
-    │                          │                          │
-    │   Features:              │                          │
-    │   - Order Review         │                          │
-    │   - Payment Methods      │                          │
-    │   - UPI/Card Processing  │                          │
-    └──────────────────────────┘                          │
                                                           │
                                                           ▼
                                               ┌──────────────────────┐
@@ -264,8 +254,7 @@
 Docker Container Network
 ├── API Server (8000)
 ├── Worker (background)
-├── Dashboard (3000)
-├── Checkout (3001)
+├── Dashboard (3000, includes embedded checkout)
 ├── PostgreSQL (5432)
 └── Redis (6379)
 ```

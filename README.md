@@ -11,7 +11,7 @@ A production-ready payment gateway system featuring merchant onboarding, async p
 - 🪝 **Webhook Delivery**: Automatic webhook delivery with HMAC signature verification
 - 💰 **Refund Processing**: Full refund management with async processing
 - 🔑 **Idempotency Keys**: Duplicate request prevention for safe retries
-- 🎯 **Hosted Checkout**: Professional payment interface for customers
+- 🎯 **Embedded Checkout**: Checkout lives inside the dashboard for a single UX
 - 📊 **Merchant Dashboard**: Real-time transaction monitoring and statistics
 - 🧩 **Embeddable SDK**: Easy integration for merchants
 - 🐳 **Dockerized**: Complete deployment with docker-compose
@@ -30,11 +30,11 @@ A production-ready payment gateway system featuring merchant onboarding, async p
 ### Prerequisites
 
 - Docker and Docker Compose installed
-- Ports 3000, 3001, 5432, 6379, and 8000 available
+- Ports 3000, 5432, 6379, and 8000 available
 
 ### Installation & Running
 
-1. **Start all services (API, Worker, Dashboard, Checkout, Redis, PostgreSQL)**
+1. **Start all services (API, Worker, Dashboard with embedded Checkout, Redis, PostgreSQL)**
 
    ```bash
    docker-compose up -d
@@ -61,7 +61,7 @@ The application will be available at:
 
 - **API**: http://localhost:8000
 - **Dashboard**: http://localhost:3000
-- **Checkout**: http://localhost:3001
+- **Checkout (embedded)**: http://localhost:3000/dashboard/checkout
 - **Redis**: localhost:6379
 - **PostgreSQL**: localhost:5432
 
@@ -499,12 +499,13 @@ curl -X POST http://localhost:8000/api/v1/refunds \
 2. Login with: test@example.com / test123
 3. View transactions and statistics
 4. Configure webhook URL
+5. Run checkout inside the dashboard at http://localhost:3000/dashboard/checkout
 
-### Test Checkout Flow
+### Test Checkout Flow (embedded)
 
-1. Create an order via API (note the order_id)
-2. Open: http://localhost:3001/checkout?order_id=<order_id>
-3. Complete payment with test card: 4111111111111111
+1. Open: http://localhost:3000/dashboard/checkout
+2. Enter amount, create order, and pick UPI or Card
+3. Complete payment (test card: 4111111111111111)
 
 ### Test Payment Processing
 
@@ -574,8 +575,7 @@ Log Result
 - **Worker** (background): Processes jobs from queues
 - **Redis** (port 6379): Job queue storage
 - **PostgreSQL** (port 5432): Data persistence
-- **Dashboard** (port 3000): Merchant UI
-- **Checkout** (port 3001): Customer payment interface
+- **Dashboard** (port 3000): Merchant UI and embedded checkout
 
 ## Deployment
 
