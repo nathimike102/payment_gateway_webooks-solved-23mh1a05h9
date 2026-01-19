@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-
-const API_URL = 'http://localhost:8000';
+import { API_URL } from '../config';
+import './Checkout.css';
 
 function Checkout() {
   const [orderId, setOrderId] = useState('');
@@ -172,8 +172,8 @@ function Checkout() {
 
   if (!order) {
     return (
-      <div style={styles.container}>
-        <div style={styles.card}>
+      <div className="checkout-page-container">
+        <div className="checkout-page-card">
           <p>Loading order...</p>
         </div>
       </div>
@@ -183,15 +183,15 @@ function Checkout() {
   // Success state
   if (paymentStatus === 'success') {
     return (
-      <div style={styles.container}>
-        <div style={styles.card}>
+      <div className="checkout-page-container">
+        <div className="checkout-page-card">
           <div data-test-id="success-state">
-            <h2 style={styles.successTitle}>Payment Successful!</h2>
-            <div style={styles.infoRow}>
+            <h2 className="checkout-page-success-title">Payment Successful!</h2>
+            <div className="checkout-page-info-row">
               <span>Payment ID: </span>
               <span data-test-id="payment-id">{paymentId}</span>
             </div>
-            <span data-test-id="success-message" style={styles.message}>
+            <span data-test-id="success-message" className="checkout-page-message">
               Your payment has been processed successfully
             </span>
           </div>
@@ -203,17 +203,17 @@ function Checkout() {
   // Error state
   if (paymentStatus === 'failed') {
     return (
-      <div style={styles.container}>
-        <div style={styles.card}>
+      <div className="checkout-page-container">
+        <div className="checkout-page-card">
           <div data-test-id="error-state">
-            <h2 style={styles.errorTitle}>Payment Failed</h2>
-            <span data-test-id="error-message" style={styles.errorText}>
+            <h2 className="checkout-page-error-title">Payment Failed</h2>
+            <span data-test-id="error-message" className="checkout-page-error-text">
               {errorMessage}
             </span>
             <button 
               data-test-id="retry-button" 
               onClick={handleRetry}
-              style={styles.retryButton}
+              className="checkout-page-retry-button"
             >
               Try Again
             </button>
@@ -226,11 +226,11 @@ function Checkout() {
   // Processing state
   if (processing) {
     return (
-      <div style={styles.container}>
-        <div style={styles.card}>
+      <div className="checkout-page-container">
+        <div className="checkout-page-card">
           <div data-test-id="processing-state">
-            <div style={styles.spinner}></div>
-            <span data-test-id="processing-message" style={styles.message}>
+            <div className="checkout-page-spinner"></div>
+            <span data-test-id="processing-message" className="checkout-page-message">
               Processing payment...
             </span>
           </div>
@@ -241,34 +241,34 @@ function Checkout() {
 
   // Main checkout UI
   return (
-    <div style={styles.container}>
-      <div style={styles.card}>
+    <div className="checkout-page-container">
+      <div className="checkout-page-card">
         <div data-test-id="checkout-container">
           {/* Order Summary */}
-          <div data-test-id="order-summary" style={styles.section}>
-            <h2 style={styles.title}>Complete Payment</h2>
-            <div style={styles.infoRow}>
+          <div data-test-id="order-summary" className="checkout-page-section">
+            <h2 className="checkout-page-title">Complete Payment</h2>
+            <div className="checkout-page-info-row">
               <span>Amount: </span>
-              <span data-test-id="order-amount" style={styles.amount}>
+              <span data-test-id="order-amount" className="checkout-page-amount">
                 ₹{(order.amount / 100).toFixed(2)}
               </span>
             </div>
-            <div style={styles.infoRow}>
+            <div className="checkout-page-info-row">
               <span>Order ID: </span>
-              <span data-test-id="order-id" style={styles.orderId}>{order.id}</span>
+              <span data-test-id="order-id" className="checkout-page-order-id">{order.id}</span>
             </div>
           </div>
 
           {/* Payment Method Selection */}
           {!selectedMethod && (
-            <div data-test-id="payment-methods" style={styles.section}>
-              <h3 style={styles.subtitle}>Select Payment Method</h3>
-              <div style={styles.methodButtons}>
+            <div data-test-id="payment-methods" className="checkout-page-section">
+              <h3 className="checkout-page-subtitle">Select Payment Method</h3>
+              <div className="checkout-page-method-buttons">
                 <button
                   data-test-id="method-upi"
                   data-method="upi"
                   onClick={showUPIForm}
-                  style={styles.methodButton}
+                  className="checkout-page-method-button"
                 >
                   UPI
                 </button>
@@ -276,7 +276,7 @@ function Checkout() {
                   data-test-id="method-card"
                   data-method="card"
                   onClick={showCardForm}
-                  style={styles.methodButton}
+                  className="checkout-page-method-button"
                 >
                   Card
                 </button>
@@ -289,29 +289,29 @@ function Checkout() {
             <form 
               data-test-id="upi-form" 
               onSubmit={handleUPISubmit}
-              style={styles.form}
+              className="checkout-page-form"
             >
-              <h3 style={styles.subtitle}>UPI Payment</h3>
+              <h3 className="checkout-page-subtitle">UPI Payment</h3>
               <input
                 data-test-id="vpa-input"
                 placeholder="username@bank"
                 type="text"
                 value={vpa}
                 onChange={(e) => setVpa(e.target.value)}
-                style={styles.input}
+                className="checkout-page-input"
                 required
               />
               <button 
                 data-test-id="pay-button" 
                 type="submit"
-                style={styles.payButton}
+                className="checkout-page-pay-button"
               >
                 Pay ₹{(order.amount / 100).toFixed(2)}
               </button>
               <button 
                 type="button" 
                 onClick={() => setSelectedMethod('')}
-                style={styles.backButton}
+                className="checkout-page-back-button"
               >
                 Back
               </button>
@@ -323,16 +323,16 @@ function Checkout() {
             <form 
               data-test-id="card-form" 
               onSubmit={handleCardSubmit}
-              style={styles.form}
+              className="checkout-page-form"
             >
-              <h3 style={styles.subtitle}>Card Payment</h3>
+              <h3 className="checkout-page-subtitle">Card Payment</h3>
               <input
                 data-test-id="card-number-input"
                 placeholder="Card Number"
                 type="text"
                 value={cardNumber}
                 onChange={(e) => setCardNumber(e.target.value)}
-                style={styles.input}
+                className="checkout-page-input"
                 required
               />
               <input
@@ -341,7 +341,7 @@ function Checkout() {
                 type="text"
                 value={expiry}
                 onChange={(e) => setExpiry(e.target.value)}
-                style={styles.input}
+                className="checkout-page-input"
                 required
               />
               <input
@@ -350,7 +350,7 @@ function Checkout() {
                 type="text"
                 value={cvv}
                 onChange={(e) => setCvv(e.target.value)}
-                style={styles.input}
+                className="checkout-page-input"
                 maxLength="4"
                 required
               />
@@ -360,20 +360,20 @@ function Checkout() {
                 type="text"
                 value={cardholderName}
                 onChange={(e) => setCardholderName(e.target.value)}
-                style={styles.input}
+                className="checkout-page-input"
                 required
               />
               <button 
                 data-test-id="pay-button" 
                 type="submit"
-                style={styles.payButton}
+                className="checkout-page-pay-button"
               >
                 Pay ₹{(order.amount / 100).toFixed(2)}
               </button>
               <button 
                 type="button" 
                 onClick={() => setSelectedMethod('')}
-                style={styles.backButton}
+                className="checkout-page-back-button"
               >
                 Back
               </button>
@@ -382,179 +382,12 @@ function Checkout() {
 
           {/* Error message */}
           {errorMessage && !paymentStatus && (
-            <div style={styles.error}>{errorMessage}</div>
+            <div className="checkout-page-error">{errorMessage}</div>
           )}
         </div>
       </div>
     </div>
   );
 }
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-    padding: '20px',
-    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-  },
-  card: {
-    background: 'white',
-    borderRadius: '12px',
-    padding: '40px',
-    maxWidth: '500px',
-    width: '100%',
-    boxShadow: '0 20px 60px rgba(0, 0, 0, 0.3)',
-  },
-  section: {
-    marginBottom: '30px',
-  },
-  title: {
-    fontSize: '28px',
-    fontWeight: '600',
-    marginBottom: '20px',
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: '20px',
-    fontWeight: '600',
-    marginBottom: '15px',
-    color: '#555',
-  },
-  infoRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '10px',
-    fontSize: '16px',
-    color: '#666',
-  },
-  amount: {
-    fontSize: '24px',
-    fontWeight: '700',
-    color: '#667eea',
-  },
-  orderId: {
-    fontSize: '14px',
-    color: '#999',
-    fontFamily: 'monospace',
-  },
-  methodButtons: {
-    display: 'flex',
-    gap: '15px',
-  },
-  methodButton: {
-    flex: 1,
-    padding: '15px',
-    fontSize: '16px',
-    fontWeight: '600',
-    border: '2px solid #667eea',
-    background: 'white',
-    color: '#667eea',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    transition: 'all 0.3s',
-  },
-  form: {
-    marginTop: '20px',
-  },
-  input: {
-    width: '100%',
-    padding: '12px',
-    marginBottom: '15px',
-    border: '2px solid #e0e0e0',
-    borderRadius: '8px',
-    fontSize: '16px',
-    boxSizing: 'border-box',
-    transition: 'border-color 0.3s',
-  },
-  payButton: {
-    width: '100%',
-    padding: '15px',
-    fontSize: '18px',
-    fontWeight: '600',
-    background: '#667eea',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    transition: 'background 0.3s',
-    marginBottom: '10px',
-  },
-  backButton: {
-    width: '100%',
-    padding: '12px',
-    fontSize: '16px',
-    background: 'transparent',
-    color: '#667eea',
-    border: '2px solid #667eea',
-    borderRadius: '8px',
-    cursor: 'pointer',
-  },
-  spinner: {
-    width: '50px',
-    height: '50px',
-    border: '5px solid #f3f3f3',
-    borderTop: '5px solid #667eea',
-    borderRadius: '50%',
-    animation: 'spin 1s linear infinite',
-    margin: '20px auto',
-  },
-  message: {
-    display: 'block',
-    textAlign: 'center',
-    fontSize: '18px',
-    color: '#666',
-    marginTop: '15px',
-  },
-  successTitle: {
-    color: '#10b981',
-    fontSize: '28px',
-    marginBottom: '20px',
-    textAlign: 'center',
-  },
-  errorTitle: {
-    color: '#ef4444',
-    fontSize: '28px',
-    marginBottom: '20px',
-    textAlign: 'center',
-  },
-  errorText: {
-    color: '#ef4444',
-    display: 'block',
-    textAlign: 'center',
-    marginBottom: '20px',
-  },
-  retryButton: {
-    width: '100%',
-    padding: '15px',
-    fontSize: '18px',
-    fontWeight: '600',
-    background: '#667eea',
-    color: 'white',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-  },
-  error: {
-    background: '#fee2e2',
-    color: '#ef4444',
-    padding: '12px',
-    borderRadius: '8px',
-    marginTop: '15px',
-    textAlign: 'center',
-  },
-};
-
-// Add spinner animation
-const styleSheet = document.createElement('style');
-styleSheet.textContent = `
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-`;
-document.head.appendChild(styleSheet);
 
 export default Checkout;

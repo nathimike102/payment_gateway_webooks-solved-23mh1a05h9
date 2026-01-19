@@ -12,6 +12,7 @@ const paymentRoutes = require('./routes/payments');
 const refundRoutes = require('./routes/refunds');
 const testRoutes = require('./routes/test');
 const publicRoutes = require('./routes/public');
+const webhookRoutes = require('./routes/webhooks');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -30,6 +31,7 @@ app.use(orderRoutes);
 app.use(paymentRoutes);
 app.use(refundRoutes);
 app.use(testRoutes);
+app.use(webhookRoutes);
 
 async function startServer() {
     try {

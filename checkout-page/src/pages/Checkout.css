@@ -1,0 +1,196 @@
+:root {
+  --bg: #050814;
+  --surface: #0b1224;
+  --panel: #0f172a;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --accent-solid: #0ea5e9;
+  --success: #34d399;
+  --danger: #f87171;
+}
+
+.checkout-page-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--bg);
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+.checkout-page-card {
+  background: var(--surface);
+  border-radius: 16px;
+  padding: 40px;
+  max-width: 520px;
+  width: 100%;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255,255,255,0.06);
+  color: var(--text);
+}
+
+.checkout-page-section {
+  margin-bottom: 30px;
+}
+
+.checkout-page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  color: var(--text);
+}
+
+.checkout-page-subtitle {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: var(--muted);
+}
+
+.checkout-page-info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color: var(--muted);
+}
+
+.checkout-page-amount {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent-solid);
+}
+
+.checkout-page-order-id {
+  font-size: 14px;
+  color: #a5b4fc;
+  font-family: monospace;
+}
+
+.checkout-page-method-buttons {
+  display: flex;
+  gap: 15px;
+}
+
+.checkout-page-method-button {
+  flex: 1;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 600;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: var(--panel);
+  color: var(--text);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+.checkout-page-form {
+  margin-top: 20px;
+}
+
+.checkout-page-input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 10px;
+  font-size: 16px;
+  box-sizing: border-box;
+  background: var(--panel);
+  color: var(--text);
+}
+
+.checkout-page-pay-button {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #0ea5e9, #22d3ee);
+  color: #0b1120;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+  margin-bottom: 10px;
+  box-shadow: 0 12px 30px rgba(14,165,233,0.35);
+}
+
+.checkout-page-back-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.checkout-page-spinner {
+  width: 50px;
+  height: 50px;
+  border: 5px solid rgba(255,255,255,0.06);
+  border-top: 5px solid #22d3ee;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.checkout-page-message {
+  display: block;
+  text-align: center;
+  font-size: 18px;
+  color: var(--muted);
+  margin-top: 15px;
+}
+
+.checkout-page-success-title {
+  color: var(--success);
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.checkout-page-error-title {
+  color: var(--danger);
+  font-size: 28px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.checkout-page-error-text {
+  color: var(--danger);
+  display: block;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.checkout-page-retry-button {
+  width: 100%;
+  padding: 15px;
+  font-size: 18px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #0ea5e9, #22d3ee);
+  color: #0b1120;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.checkout-page-error {
+  background: rgba(248,113,113,0.1);
+  color: var(--danger);
+  padding: 12px;
+  border-radius: 10px;
+  margin-top: 15px;
+  text-align: center;
+  border: 1px solid rgba(248,113,113,0.35);
+}

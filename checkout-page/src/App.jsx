@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-
-const API_URL = 'http://localhost:8000'
+import { API_URL } from './config'
+import './App.css'
 
 function App() {
   const [order, setOrder] = useState(null)
@@ -227,14 +227,14 @@ function App() {
 
   if (showOrderForm && !order) {
     return (
-      <div style={styles.container}>
-        <div style={styles.checkoutContainer}>
-          <h1 style={styles.title}>Payment Checkout</h1>
-          <div style={styles.orderForm}>
-            <h2 style={styles.subtitle}>Enter Order Details</h2>
+      <div className="checkout-container">
+        <div className="checkout-card">
+          <h1 className="checkout-title">Payment Checkout</h1>
+          <div className="checkout-order-form">
+            <h2 className="checkout-subtitle">Enter Order Details</h2>
             <form onSubmit={handleCreateOrder}>
-              <div style={styles.formGroup}>
-                <label style={styles.label}>Amount (in Rupees)</label>
+              <div className="checkout-form-group">
+                <label className="checkout-label">Amount (in Rupees)</label>
                 <input
                   type="number"
                   min="1"
@@ -244,22 +244,22 @@ function App() {
                   onChange={(e) => setOrderAmount(e.target.value)}
                   required
                   disabled={orderLoading}
-                  style={styles.input}
+                  className="checkout-input"
                 />
               </div>
-              {errorMessage && <div style={styles.errorBox}>{errorMessage}</div>}
+              {errorMessage && <div className="checkout-error-box">{errorMessage}</div>}
               <button 
                 type="submit" 
                 disabled={orderLoading || !orderAmount}
-                style={styles.button}
+                className="checkout-pay-button"
               >
                 {orderLoading ? 'Processing...' : 'Proceed to Payment'}
               </button>
             </form>
-            <div style={styles.infoBox}>
+            <div className="checkout-info-box">
               <p><strong>ℹ️ How it works:</strong></p>
               <p>You can test payments directly here, or create orders from the merchant dashboard and share the checkout link:</p>
-              <code style={styles.code}>
+              <code className="checkout-code">
                 http://localhost:3001/checkout?order_id=YOUR_ORDER_ID
               </code>
             </div>
@@ -271,40 +271,40 @@ function App() {
 
   if (!order) {
     return (
-      <div style={styles.container}>
-        <div style={styles.loading}>Loading order details...</div>
+      <div className="checkout-container">
+        <div className="checkout-loading">Loading order details...</div>
       </div>
     )
   }
 
   return (
-    <div style={styles.container}>
-      <div data-test-id="checkout-container" style={styles.checkoutContainer}>
+    <div className="checkout-container">
+      <div data-test-id="checkout-container" className="checkout-card">
         {/* Order Summary */}
-        <div data-test-id="order-summary" style={styles.orderSummary}>
-          <h2 style={styles.title}>Complete Payment</h2>
-          <div style={styles.summaryRow}>
+        <div data-test-id="order-summary" className="checkout-order-summary">
+          <h2 className="checkout-title">Complete Payment</h2>
+          <div className="checkout-summary-row">
             <span>Amount: </span>
-            <span data-test-id="order-amount" style={styles.amount}>
+            <span data-test-id="order-amount" className="checkout-amount">
               {formatAmount(order.amount)}
             </span>
           </div>
-          <div style={styles.summaryRow}>
+          <div className="checkout-summary-row">
             <span>Order ID: </span>
-            <span data-test-id="order-id" style={styles.orderId}>{order.id}</span>
+            <span data-test-id="order-id" className="checkout-order-id">{order.id}</span>
           </div>
         </div>
 
         {/* Payment Method Selection */}
         {paymentState === 'form' && !selectedMethod && (
-          <div data-test-id="payment-methods" style={styles.paymentMethods}>
-            <h3 style={styles.subtitle}>Select Payment Method</h3>
-            <div style={styles.methodButtons}>
+          <div data-test-id="payment-methods" className="checkout-payment-methods">
+            <h3 className="checkout-subtitle">Select Payment Method</h3>
+            <div className="checkout-method-buttons">
               <button
                 data-test-id="method-upi"
                 data-method="upi"
                 onClick={showUPIForm}
-                style={styles.methodButton}
+                className="checkout-method-button"
               >
                 📱 UPI
               </button>
@@ -312,7 +312,7 @@ function App() {
                 data-test-id="method-card"
                 data-method="card"
                 onClick={showCardForm}
-                style={styles.methodButton}
+                className="checkout-method-button"
               >
                 💳 Card
               </button>
@@ -322,8 +322,8 @@ function App() {
 
         {/* UPI Payment Form */}
         {paymentState === 'form' && selectedMethod === 'upi' && (
-          <form data-test-id="upi-form" onSubmit={handleUPISubmit} style={styles.form}>
-            <h3 style={styles.subtitle}>UPI Payment</h3>
+          <form data-test-id="upi-form" onSubmit={handleUPISubmit} className="checkout-form">
+            <h3 className="checkout-subtitle">UPI Payment</h3>
             <input
               data-test-id="vpa-input"
               type="text"
@@ -331,12 +331,12 @@ function App() {
               value={vpa}
               onChange={(e) => setVpa(e.target.value)}
               required
-              style={styles.input}
+              className="checkout-input"
             />
-            <button data-test-id="pay-button" type="submit" style={styles.payButton}>
+            <button data-test-id="pay-button" type="submit" className="checkout-pay-button">
               Pay {formatAmount(order.amount)}
             </button>
-            <button type="button" onClick={() => setSelectedMethod(null)} style={styles.backButton}>
+            <button type="button" onClick={() => setSelectedMethod(null)} className="checkout-back-button">
               ← Back
             </button>
           </form>
@@ -344,8 +344,8 @@ function App() {
 
         {/* Card Payment Form */}
         {paymentState === 'form' && selectedMethod === 'card' && (
-          <form data-test-id="card-form" onSubmit={handleCardSubmit} style={styles.form}>
-            <h3 style={styles.subtitle}>Card Payment</h3>
+          <form data-test-id="card-form" onSubmit={handleCardSubmit} className="checkout-form">
+            <h3 className="checkout-subtitle">Card Payment</h3>
             <input
               data-test-id="card-number-input"
               type="text"
@@ -353,9 +353,9 @@ function App() {
               value={cardNumber}
               onChange={(e) => setCardNumber(e.target.value)}
               required
-              style={styles.input}
+              className="checkout-input"
             />
-            <div style={styles.cardRow}>
+            <div className="checkout-card-row">
               <input
                 data-test-id="expiry-input"
                 type="text"
@@ -363,7 +363,7 @@ function App() {
                 value={expiry}
                 onChange={(e) => setExpiry(e.target.value)}
                 required
-                style={{ ...styles.input, width: '48%' }}
+                className="checkout-input"
               />
               <input
                 data-test-id="cvv-input"
@@ -372,7 +372,7 @@ function App() {
                 value={cvv}
                 onChange={(e) => setCvv(e.target.value)}
                 required
-                style={{ ...styles.input, width: '48%' }}
+                className="checkout-input"
               />
             </div>
             <input
@@ -382,12 +382,12 @@ function App() {
               value={cardholderName}
               onChange={(e) => setCardholderName(e.target.value)}
               required
-              style={styles.input}
+              className="checkout-input"
             />
-            <button data-test-id="pay-button" type="submit" style={styles.payButton}>
+            <button data-test-id="pay-button" type="submit" className="checkout-pay-button">
               Pay {formatAmount(order.amount)}
             </button>
-            <button type="button" onClick={() => setSelectedMethod(null)} style={styles.backButton}>
+            <button type="button" onClick={() => setSelectedMethod(null)} className="checkout-back-button">
               ← Back
             </button>
           </form>
@@ -395,9 +395,9 @@ function App() {
 
         {/* Processing State */}
         {paymentState === 'processing' && (
-          <div data-test-id="processing-state" style={styles.processingState}>
+          <div data-test-id="processing-state" className="checkout-processing-state">
             <div className="spinner"></div>
-            <span data-test-id="processing-message" style={styles.processingMessage}>
+            <span data-test-id="processing-message" className="checkout-processing-message">
               Processing payment...
             </span>
           </div>
@@ -405,14 +405,14 @@ function App() {
 
         {/* Success State */}
         {paymentState === 'success' && (
-          <div data-test-id="success-state" style={styles.successState}>
-            <div style={styles.successIcon}>✓</div>
-            <h2 style={styles.successTitle}>Payment Successful!</h2>
-            <div style={styles.summaryRow}>
+          <div data-test-id="success-state" className="checkout-success-state">
+            <div className="checkout-success-icon">✓</div>
+            <h2 className="checkout-success-title">Payment Successful!</h2>
+            <div className="checkout-summary-row">
               <span>Payment ID: </span>
-              <span data-test-id="payment-id" style={styles.paymentId}>{paymentId}</span>
+              <span data-test-id="payment-id" className="checkout-payment-id">{paymentId}</span>
             </div>
-            <span data-test-id="success-message" style={styles.successMessage}>
+            <span data-test-id="success-message" className="checkout-success-message">
               Your payment has been processed successfully
             </span>
           </div>
@@ -420,13 +420,13 @@ function App() {
 
         {/* Error State */}
         {paymentState === 'error' && (
-          <div data-test-id="error-state" style={styles.errorState}>
-            <div style={styles.errorIcon}>✕</div>
-            <h2 style={styles.errorTitle}>Payment Failed</h2>
-            <span data-test-id="error-message" style={styles.errorMessage}>
+          <div data-test-id="error-state" className="checkout-error-state">
+            <div className="checkout-error-icon">✕</div>
+            <h2 className="checkout-error-title">Payment Failed</h2>
+            <span data-test-id="error-message" className="checkout-error-message">
               {errorMessage}
             </span>
-            <button data-test-id="retry-button" onClick={handleRetry} style={styles.retryButton}>
+            <button data-test-id="retry-button" onClick={handleRetry} className="checkout-retry-button">
               Try Again
             </button>
           </div>
@@ -434,239 +434,6 @@ function App() {
       </div>
     </div>
   )
-}
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    background: '#0056b3',
-    padding: '20px',
-  },
-  loading: {
-    color: 'white',
-    fontSize: '18px',
-  },
-  checkoutContainer: {
-    background: 'white',
-    borderRadius: '15px',
-    padding: '40px',
-    maxWidth: '500px',
-    width: '100%',
-    boxShadow: '0 20px 60px rgba(0,0,0,0.3)',
-  },
-  orderSummary: {
-    marginBottom: '30px',
-    padding: '20px',
-    background: '#f7fafc',
-    borderRadius: '10px',
-  },
-  title: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    marginBottom: '20px',
-    color: '#333',
-  },
-  subtitle: {
-    fontSize: '18px',
-    fontWeight: '600',
-    marginBottom: '20px',
-    color: '#555',
-  },
-  summaryRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: '10px',
-    fontSize: '16px',
-    color: '#666',
-  },
-  amount: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    color: '#ff8c00',
-  },
-  orderId: {
-    fontFamily: 'monospace',
-    fontSize: '14px',
-    color: '#ff8c00',
-  },
-  paymentMethods: {
-    marginBottom: '20px',
-  },
-  methodButtons: {
-    display: 'flex',
-    gap: '15px',
-  },
-  methodButton: {
-    flex: 1,
-    padding: '20px',
-    fontSize: '18px',
-    fontWeight: 'bold',
-    background: '#0056b3',
-    color: 'white',
-    border: 'none',
-    borderRadius: '10px',
-    cursor: 'pointer',
-    transition: 'transform 0.2s',
-  },
-  form: {
-    display: 'flex',
-    flexDirection: 'column',
-    gap: '15px',
-  },
-  input: {
-    padding: '12px 15px',
-    fontSize: '16px',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    outline: 'none',
-  },
-  cardRow: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    gap: '15px',
-  },
-  payButton: {
-    padding: '15px',
-    fontSize: '18px',
-    fontWeight: 'bold',
-    color: 'white',
-    background: '#ff8c00',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    marginTop: '10px',
-  },
-  backButton: {
-    padding: '12px',
-    fontSize: '14px',
-    color: '#ff8c00',
-    background: 'transparent',
-    border: '1px solid #ff8c00',
-    borderRadius: '8px',
-    cursor: 'pointer',
-  },
-  processingState: {
-    textAlign: 'center',
-    padding: '40px 20px',
-    background: '#0056b3',
-    borderRadius: '10px',
-    color: 'white',
-  },
-  processingMessage: {
-    fontSize: '18px',
-    fontWeight: '600',
-  },
-  successState: {
-    textAlign: 'center',
-    padding: '40px 20px',
-  },
-  successIcon: {
-    fontSize: '64px',
-    color: '#48bb78',
-    marginBottom: '20px',
-  },
-  successTitle: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: '20px',
-  },
-  successMessage: {
-    fontSize: '16px',
-    color: '#666',
-    display: 'block',
-    marginTop: '10px',
-  },
-  paymentId: {
-    fontFamily: 'monospace',
-    fontSize: '14px',
-    color: '#ff8c00',
-  },
-  errorState: {
-    textAlign: 'center',
-    padding: '40px 20px',
-  },
-  errorIcon: {
-    fontSize: '64px',
-    color: '#f56565',
-    marginBottom: '20px',
-  },
-  errorTitle: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: '20px',
-  },
-  errorMessage: {
-    fontSize: '16px',
-    color: '#666',
-    display: 'block',
-    marginBottom: '30px',
-  },
-  retryButton: {
-    padding: '12px 30px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    color: 'white',
-    background: '#ff8c00',
-    border: 'none',
-    borderRadius: '8px',
-    cursor: 'pointer',
-  },
-  orderForm: {
-    marginTop: '30px',
-  },
-  formGroup: {
-    marginBottom: '20px',
-  },
-  label: {
-    display: 'block',
-    marginBottom: '8px',
-    fontWeight: '600',
-    color: '#333',
-  },
-  input: {
-    width: '100%',
-    padding: '12px',
-    fontSize: '16px',
-    border: '1px solid #ddd',
-    borderRadius: '8px',
-    boxSizing: 'border-box',
-    outline: 'none',
-  },
-  errorBox: {
-    background: '#fff5f5',
-    border: '1px solid #feb2b2',
-    color: '#c53030',
-    padding: '12px',
-    borderRadius: '8px',
-    marginBottom: '15px',
-    fontSize: '14px',
-  },
-  infoBox: {
-    background: '#fffaf0',
-    border: '1px solid #fbd38d',
-    color: '#7c2d12',
-    padding: '15px',
-    borderRadius: '8px',
-    marginTop: '20px',
-    fontSize: '13px',
-    lineHeight: '1.6',
-  },
-  code: {
-    display: 'block',
-    background: '#f7fafc',
-    padding: '10px',
-    borderRadius: '5px',
-    marginTop: '10px',
-    fontSize: '12px',
-    fontFamily: 'monospace',
-    overflowWrap: 'break-word',
-    color: '#ff8c00',
-  },
 }
 
 export default App

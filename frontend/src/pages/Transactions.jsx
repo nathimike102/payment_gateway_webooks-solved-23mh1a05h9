@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 
-const API_URL = 'http://localhost:8000'
+import { API_URL } from '../config'
+import './Transactions.css'
 
 function Transactions() {
   const [transactions, setTransactions] = useState([])
@@ -56,44 +57,44 @@ function Transactions() {
   const getStatusStyle = (status) => {
     switch (status) {
       case 'success':
-        return { background: '#48bb78', color: 'white' }
+        return 'success'
       case 'failed':
-        return { background: '#f56565', color: 'white' }
+        return 'failed'
       case 'processing':
-        return { background: '#ed8936', color: 'white' }
+        return 'processing'
       default:
-        return { background: '#718096', color: 'white' }
+        return 'default'
     }
   }
 
   return (
-    <div style={styles.container}>
-      <nav style={styles.nav}>
-        <h1 style={styles.navTitle}>Payment Gateway Dashboard</h1>
-        <Link to="/dashboard" style={styles.backLink}>
-          <button style={styles.backBtn}>← Back to Dashboard</button>
+    <div className="transactions-container">
+      <nav className="transactions-nav">
+        <h1 className="transactions-nav-title">Payment Gateway Dashboard</h1>
+        <Link to="/dashboard" className="transactions-back-link">
+          <button className="transactions-back-btn">← Back to Dashboard</button>
         </Link>
       </nav>
 
-      <div style={styles.content}>
-        <div style={styles.card}>
-          <h2 style={styles.heading}>All Transactions</h2>
+      <div className="transactions-content">
+        <div className="transactions-card">
+          <h2 className="transactions-heading">All Transactions</h2>
 
           {loading ? (
-            <p style={styles.loading}>Loading transactions...</p>
+            <p className="transactions-loading">Loading transactions...</p>
           ) : transactions.length === 0 ? (
-            <p style={styles.noData}>No transactions yet. Create an order via API to see transactions here.</p>
+            <p className="transactions-no-data">No transactions yet. Create an order via API to see transactions here.</p>
           ) : (
-            <div style={styles.tableContainer}>
-              <table data-test-id="transactions-table" style={styles.table}>
+            <div className="transactions-table-container">
+              <table data-test-id="transactions-table" className="transactions-table">
                 <thead>
                   <tr>
-                    <th style={styles.th}>Payment ID</th>
-                    <th style={styles.th}>Order ID</th>
-                    <th style={styles.th}>Amount</th>
-                    <th style={styles.th}>Method</th>
-                    <th style={styles.th}>Status</th>
-                    <th style={styles.th}>Created</th>
+                    <th>Payment ID</th>
+                    <th>Order ID</th>
+                    <th>Amount</th>
+                    <th>Method</th>
+                    <th>Status</th>
+                    <th>Created</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -102,18 +103,25 @@ function Transactions() {
                       key={txn.id}
                       data-test-id="transaction-row"
                       data-payment-id={txn.id}
-                      style={styles.tr}
                     >
-                      <td data-test-id="payment-id" style={styles.td}>{txn.id}</td>
-                      <td data-test-id="order-id" style={styles.td}>{txn.order_id}</td>
-                      <td data-test-id="amount" style={styles.td}>{formatAmount(txn.amount)}</td>
-                      <td data-test-id="method" style={styles.td}>{txn.method}</td>
-                      <td data-test-id="status" style={styles.td}>
-                        <span style={{ ...styles.badge, ...getStatusStyle(txn.status) }}>
+                      <td data-test-id="payment-id">{txn.id}</td>
+                      <td data-test-id="order-id">{txn.order_id}</td>
+                      <td data-test-id="amount">{formatAmount(txn.amount)}</td>
+                      <td data-test-id="method">{txn.method}</td>
+                      <td data-test-id="status">
+                        <span 
+                          className={`transactions-badge transactions-badge-${getStatusStyle(txn.status)}`}
+                          style={
+                            txn.status === 'success' ? { background: '#48bb78', color: 'white' } :
+                            txn.status === 'failed' ? { background: '#f56565', color: 'white' } :
+                            txn.status === 'processing' ? { background: '#ed8936', color: 'white' } :
+                            { background: '#718096', color: 'white' }
+                          }
+                        >
                           {txn.status}
                         </span>
                       </td>
-                      <td data-test-id="created-at" style={styles.td}>
+                      <td data-test-id="created-at">
                         {formatDate(txn.created_at)}
                       </td>
                     </tr>
@@ -126,95 +134,6 @@ function Transactions() {
       </div>
     </div>
   )
-}
-
-const styles = {
-  container: {
-    minHeight: '100vh',
-    background: '#f5f5f5',
-  },
-  nav: {
-    background: '#0056b3',
-    color: 'white',
-    padding: '20px 40px',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-  },
-  navTitle: {
-    fontSize: '24px',
-    fontWeight: 'bold',
-  },
-  backLink: {
-    textDecoration: 'none',
-  },
-  backBtn: {
-    padding: '8px 20px',
-    background: 'rgba(255,255,255,0.2)',
-    color: 'white',
-    border: '1px solid white',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    fontSize: '14px',
-  },
-  content: {
-    padding: '40px',
-    maxWidth: '1400px',
-    margin: '0 auto',
-  },
-  card: {
-    background: 'white',
-    borderRadius: '10px',
-    padding: '30px',
-    boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-  },
-  heading: {
-    fontSize: '28px',
-    marginBottom: '30px',
-    color: '#333',
-  },
-  loading: {
-    textAlign: 'center',
-    padding: '40px',
-    color: '#666',
-    fontSize: '16px',
-  },
-  noData: {
-    textAlign: 'center',
-    padding: '40px',
-    color: '#666',
-    fontSize: '16px',
-  },
-  tableContainer: {
-    overflowX: 'auto',
-  },
-  table: {
-    width: '100%',
-    borderCollapse: 'collapse',
-  },
-  th: {
-    textAlign: 'left',
-    padding: '15px',
-    background: '#f7fafc',
-    borderBottom: '2px solid #e2e8f0',
-    fontWeight: '600',
-    color: '#555',
-  },
-  tr: {
-    borderBottom: '1px solid #e2e8f0',
-  },
-  td: {
-    padding: '15px',
-    color: '#666',
-  },
-  badge: {
-    padding: '5px 12px',
-    borderRadius: '20px',
-    fontSize: '12px',
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-  },
 }
 
 export default Transactions
