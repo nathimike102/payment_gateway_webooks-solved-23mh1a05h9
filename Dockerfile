@@ -35,9 +35,9 @@ COPY backend/public ./backend/public
 
 # Environment
 ENV NODE_ENV=production
-ENV PORT=8000
+ENV PORT=3000
 
-EXPOSE 8000
+EXPOSE 3000
 
 # Start the API server (which will serve the frontend as static files)
 CMD ["npm", "--prefix", "backend", "start"]
