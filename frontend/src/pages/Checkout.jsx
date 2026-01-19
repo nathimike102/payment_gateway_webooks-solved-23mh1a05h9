@@ -311,7 +311,7 @@ function Checkout() {
                     />
                   </div>
                   {errorMessage && <div className="checkout-error">{errorMessage}</div>}
-                  <button type="submit" className="checkout-submit">Pay {formatAmount(order.amount)}</button>
+                  <button type="submit" className="checkout-pay">Pay {formatAmount(order.amount)}</button>
                   <button type="button" onClick={handleBackToAmount} className="checkout-back-btn">← Back to Methods</button>
                 </form>
               )}
