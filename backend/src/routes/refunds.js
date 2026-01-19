@@ -34,6 +34,10 @@ router.post('/api/v1/refunds', authenticateApiKey, async (req, res) => {
 
         const payment = paymentResult.rows[0];
 
+        if (payment.status !== 'success') {
+            return res.status(400).json({ error: 'Only successful payments can be refunded' });
+        }
+
         // Verify order exists
         const orderResult = await db.query(
             'SELECT * FROM orders WHERE id = $1',
@@ -48,8 +52,22 @@ router.post('/api/v1/refunds', authenticateApiKey, async (req, res) => {
 
         // Validate refund amount
         const refundAmount = amount || payment.amount;
-        if (refundAmount > payment.amount) {
-            return res.status(400).json({ error: 'Refund amount cannot exceed payment amount' });
+        if (!refundAmount || refundAmount <= 0) {
+            return res.status(400).json({ error: 'Refund amount must be greater than zero' });
+        }
+
+        const priorRefundsResult = await db.query(
+            `SELECT COALESCE(SUM(amount), 0) AS total_refunded
+             FROM refunds
+             WHERE payment_id = $1 AND merchant_id = $2 AND status != 'failed'`,
+            [payment_id, merchantId]
+        );
+
+        const alreadyRefunded = parseInt(priorRefundsResult.rows[0].total_refunded, 10) || 0;
+        const remaining = payment.amount - alreadyRefunded;
+
+        if (refundAmount > remaining) {
+            return res.status(400).json({ error: 'Refund amount exceeds remaining refundable balance' });
         }
 
         // Create refund
