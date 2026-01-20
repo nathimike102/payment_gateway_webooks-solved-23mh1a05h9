@@ -1,13 +1,15 @@
 {
   "version": 2,
   "public": "frontend/dist",
+  "buildCommand": "echo 'no build'",
+  "outputDirectory": "frontend/dist",
   "routes": [
     {
       "src": "/api/v1/(.*)",
       "dest": "/api/v1.js"
     },
     {
-      "src": "/(.*)",
+      "src": "/.*",
       "dest": "/index.html"
     }
   ]
