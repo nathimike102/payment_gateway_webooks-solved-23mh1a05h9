@@ -37,7 +37,7 @@ function WebhookConfig() {
 
   const fetchConfig = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/v1/webhooks/config`, { headers: authHeaders })
+      const res = await fetch(`${API_URL}/webhooks/config`, { headers: authHeaders })
       if (res.ok) {
         const data = await res.json()
         setWebhookUrl(data.webhook_url || '')
@@ -50,7 +50,7 @@ function WebhookConfig() {
   const fetchLogs = async () => {
     setLoadingLogs(true)
     try {
-      const res = await fetch(`${API_URL}/api/v1/webhooks/logs?limit=20`, { headers: authHeaders })
+      const res = await fetch(`${API_URL}/webhooks/logs?limit=20`, { headers: authHeaders })
       if (res.ok) {
         const data = await res.json()
         setLogs(data.logs || [])
@@ -64,7 +64,7 @@ function WebhookConfig() {
 
   const fetchQueue = async () => {
     try {
-      const res = await fetch(`${API_URL}/api/v1/queue/status`)
+      const res = await fetch(`${API_URL}/queue/status`)
       if (res.ok) {
         const data = await res.json()
         setQueueStats(data.webhooks)
@@ -79,7 +79,7 @@ function WebhookConfig() {
     setSaving(true)
     setMessage('')
     try {
-      const res = await fetch(`${API_URL}/api/v1/webhooks/config`, {
+      const res = await fetch(`${API_URL}/webhooks/config`, {
         method: 'PUT',
         headers: {
           ...authHeaders,
@@ -278,7 +278,7 @@ function RefundManagement() {
   const fetchRefunds = async () => {
     setLoading(true)
     try {
-      const res = await fetch(`${API_URL}/api/v1/refunds`, { headers: authHeaders })
+      const res = await fetch(`${API_URL}/refunds`, { headers: authHeaders })
       if (res.ok) {
         const data = await res.json()
         setRefunds(data.refunds || [])
@@ -302,7 +302,7 @@ function RefundManagement() {
     const amountInPaise = amount ? Math.round(parseFloat(amount) * 100) : undefined
     setCreating(true)
     try {
-      const res = await fetch(`${API_URL}/api/v1/refunds`, {
+      const res = await fetch(`${API_URL}/refunds`, {
         method: 'POST',
         headers: authHeaders,
         body: JSON.stringify({ payment_id: paymentId, amount: amountInPaise, reason }),
@@ -462,7 +462,7 @@ function ApiDocumentation() {
   const apiKey = localStorage.getItem('apiKey')
   const apiSecret = localStorage.getItem('apiSecret')
 
-  const codeBlock = `curl -X POST ${API_URL}/api/v1/payments \\
+  const codeBlock = `curl -X POST ${API_URL}/payments \\
   -H 'X-Api-Key: ${apiKey || 'your_api_key'}' \\
   -H 'X-Api-Secret: ${apiSecret || 'your_api_secret'}' \\
   -H 'Content-Type: application/json' \\

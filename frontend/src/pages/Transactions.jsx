@@ -26,7 +26,7 @@ function Transactions() {
 
   const fetchTransactions = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/v1/payments`, {
+      const response = await fetch(`${API_URL}/payments`, {
         method: 'GET',
         headers: {
           'X-Api-Key': apiKey,
@@ -50,7 +50,7 @@ function Transactions() {
 
   const fetchRefunds = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/v1/refunds`, {
+      const response = await fetch(`${API_URL}/refunds`, {
         method: 'GET',
         headers: {
           'X-Api-Key': apiKey,

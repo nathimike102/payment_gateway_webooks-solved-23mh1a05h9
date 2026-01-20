@@ -31,13 +31,13 @@ function Dashboard() {
   const fetchStats = async () => {
     try {
       const [paymentsRes, refundsRes] = await Promise.all([
-        fetch(`${API_URL}/api/v1/payments`, {
+        fetch(`${API_URL}/payments`, {
           headers: {
             'X-Api-Key': apiKey,
             'X-Api-Secret': apiSecret,
           },
         }),
-        fetch(`${API_URL}/api/v1/refunds`, {
+        fetch(`${API_URL}/refunds`, {
           headers: {
             'X-Api-Key': apiKey,
             'X-Api-Secret': apiSecret,

@@ -41,7 +41,7 @@ function Checkout() {
   const fetchOrder = async (orderId) => {
     try {
       setOrderLoading(true)
-      const response = await fetch(`${API_URL}/api/v1/orders/${orderId}`, {
+      const response = await fetch(`${API_URL}/orders/${orderId}`, {
         method: 'GET',
         headers: {
           'X-Api-Key': apiKey,

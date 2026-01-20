@@ -1,7 +1,34 @@
 const express = require('express');
 const db = require('../db');
+const fs = require('fs');
+const path = require('path');
 
 const router = express.Router();
+
+// Initialize database schema
+router.post('/api/v1/test/init-db', async (req, res) => {
+    try {
+        // Read schema.sql
+        const schemaPath = path.join(__dirname, '../../schema.sql');
+        const schema = fs.readFileSync(schemaPath, 'utf8');
+        
+        // Execute schema
+        await db.query(schema);
+        
+        res.json({
+            message: 'Database schema initialized successfully',
+            status: 'success'
+        });
+    } catch (error) {
+        console.error('DB init error:', error);
+        res.status(500).json({
+            error: {
+                code: 'SERVER_ERROR',
+                description: error.message
+            }
+        });
+    }
+});
 
 router.get('/api/v1/test/merchant', async (req, res) => {
     try {

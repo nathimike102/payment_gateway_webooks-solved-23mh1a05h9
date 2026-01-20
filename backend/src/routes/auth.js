@@ -1,11 +1,12 @@
 const express = require('express');
 const AuthService = require('../services/AuthService');
 const { sendSuccess, sendError } = require('../utils/response');
+const bcrypt = require('bcrypt');
 
 const router = express.Router();
 
 // Register new merchant
-router.post('/register', async (req, res) => {
+router.post('/api/v1/auth/register', async (req, res) => {
     try {
         const { name, email, password, confirmPassword } = req.body;
 
@@ -43,7 +44,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Login merchant
-router.post('/login', async (req, res) => {
+router.post('/api/v1/auth/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -65,6 +66,41 @@ router.post('/login', async (req, res) => {
         });
     } catch (error) {
         return sendError(res, error.message, 'AUTHENTICATION_ERROR', 401);
+    }
+});
+
+// Seed test merchant (for production testing only)
+router.post('/api/v1/auth/seed-test', async (req, res) => {
+    try {
+        const db = require('../db');
+        const testMerchantId = '550e8400-e29b-41d4-a716-446655440000';
+        
+        // Check if already exists
+        const existing = await db.query('SELECT id FROM merchants WHERE email = $1', ['test@example.com']);
+        if (existing.rows.length > 0) {
+            return res.json({ message: 'Test merchant already exists' });
+        }
+        
+        // Create test merchant
+        const passwordHash = await bcrypt.hash('test123', 10);
+        const result = await db.query(
+            `INSERT INTO merchants (id, name, email, password_hash, api_key, api_secret, created_at, updated_at)
+             VALUES ($1, $2, $3, $4, $5, $6, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+             RETURNING id, email`,
+            [
+                testMerchantId,
+                'Test Merchant',
+                'test@example.com',
+                passwordHash,
+                'key_test_abc123',
+                'secret_test_xyz789'
+            ]
+        );
+        
+        res.json({ message: 'Test merchant created', merchant: result.rows[0] });
+    } catch (error) {
+        console.error('Seed error:', error);
+        res.status(500).json({ error: error.message });
     }
 });
 
