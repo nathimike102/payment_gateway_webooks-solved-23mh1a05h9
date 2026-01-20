@@ -1,3 +1,14 @@
 {
-  "version": 2
+  "version": 2,
+  "public": "frontend/dist",
+  "routes": [
+    {
+      "src": "/api/v1/(.*)",
+      "dest": "/api/v1.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/index.html"
+    }
+  ]
 }
