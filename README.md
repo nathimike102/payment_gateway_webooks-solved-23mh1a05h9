@@ -71,68 +71,110 @@ API Secret: secret_test_xyz789
    https://payment-gateway-h9.vercel.app/dashboard/webhooks
    ```
 
-## Local Development
+## Local Development with Docker
 
 ### Prerequisites
 
 - Docker and Docker Compose installed
-- Ports 3000, 5432, 6379, and 8000 available
+- Ports 3000, 5432, 6379, and 8000 available (not in use)
 
-### Installation & Running
+### Quick Start
 
-1. **Start all services (API, Worker, Dashboard with embedded Checkout, Redis, PostgreSQL)**
+1. **Start all services**
 
    ```bash
    docker-compose up -d
    ```
 
-2. **Verify services are running**
+   This starts:
+   - **Dashboard** (React UI + Nginx proxy): `localhost:3000`
+   - **API** (Backend): `localhost:8000`
+   - **PostgreSQL**: `localhost:5432`
+   - **Redis**: `localhost:6379`
+   - **Worker** (Async job processor)
+
+2. **Verify all services are healthy**
 
    ```bash
    docker-compose ps
    ```
 
-3. **Check health**
+   All containers should show `Running` or `Healthy` status.
 
-   ```bash
-   curl http://localhost:8000/health
+3. **Access the application**
+
+   ```
+   Dashboard: http://localhost:3000
+   API: http://localhost:8000
    ```
 
-4. **Check job queue status**
+4. **Stop all services**
+
    ```bash
-   curl http://localhost:8000/api/v1/queue/status
+   docker-compose down
    ```
 
-The application will be available at:
+### Testing Endpoints
 
-- **API**: http://localhost:8000
-- **Dashboard**: http://localhost:3000
-- **Checkout (embedded)**: http://localhost:3000/dashboard/checkout
-- **Redis**: localhost:6379
-- **PostgreSQL**: localhost:5432
+```bash
+# Health check
+curl http://localhost:3000/api/v1/health
+
+# Queue status
+curl http://localhost:3000/api/v1/queue/status
+
+# SDK loading
+curl http://localhost:3000/sdk/payment-gateway.js
+
+# Register new merchant
+curl -X POST http://localhost:3000/api/v1/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "name": "Test Merchant",
+    "email": "merchant@test.com",
+    "password": "password123",
+    "confirmPassword": "password123"
+  }'
+```
+
+### Application Access
+
+- **Frontend Dashboard**: http://localhost:3000
+- **API Direct**: http://localhost:8000
+- **API via Proxy**: http://localhost:3000/api/v1/*
+- **SDK**: http://localhost:3000/sdk/payment-gateway.js
 
 ## Environment Variables
 
-Create `.env` file in the root directory for local development:
+### Local Development (`.env`)
+
+For local Docker development, variables are typically set in docker-compose.yml and handled automatically. If needed, create `.env`:
 
 ```env
-# Database
-DATABASE_URL=postgresql://gateway_user:gateway_pass@localhost:5432/payment_gateway
-
-# Server
+# Backend API
 PORT=8000
+NODE_ENV=development
 
-# Redis
-REDIS_HOST=localhost
-REDIS_PORT=6379
+# Database (Docker uses postgres service)
+DATABASE_URL=postgresql://gateway_user:gateway_pass@postgres:5432/payment_gateway
+
+# Redis (Docker uses redis service)
+REDIS_URL=redis://redis:6379
 
 # Test Configuration
 TEST_MODE=false
 TEST_PAYMENT_SUCCESS=true
 TEST_PROCESSING_DELAY=1000
-TEST_MERCHANT_EMAIL=test@example.com
-TEST_API_KEY=key_test_abc123
-TEST_API_SECRET=secret_test_xyz789
+```
+
+### Production (Vercel)
+
+Set these in Vercel project settings:
+
+```
+DATABASE_URL     - Neon PostgreSQL connection string
+REDIS_URL        - Upstash Redis connection string
+NODE_ENV         - production
 ```
 
 ## API Documentation
