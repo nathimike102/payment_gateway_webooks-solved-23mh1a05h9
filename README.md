@@ -2,6 +2,10 @@
 
 A production-ready payment gateway system featuring merchant onboarding, async payment processing with job queues, webhook delivery with HMAC signatures, refund management, and an embeddable SDK.
 
+## ✅ Status
+
+**🚀 LIVE ON VERCEL**: https://payment-gateway-h9.vercel.app
+
 ## Features
 
 - 🔐 **API Authentication**: Secure merchant authentication using API key/secret
@@ -14,18 +18,57 @@ A production-ready payment gateway system featuring merchant onboarding, async p
 - 🎯 **Embedded Checkout**: Checkout lives inside the dashboard for a single UX
 - 📊 **Merchant Dashboard**: Real-time transaction monitoring and statistics
 - 🧩 **Embeddable SDK**: Easy integration for merchants
-- 🐳 **Dockerized**: Complete deployment with docker-compose
+- 🐳 **Dockerized**: Complete deployment with docker-compose for local development
 - 💾 **PostgreSQL**: Robust database with proper indexing
 
 ## Tech Stack
 
-- **Backend**: Node.js + Express
-- **Job Queue**: Bull + Redis
-- **Database**: PostgreSQL 15
-- **Frontend**: React + Vite
-- **Deployment**: Docker + Docker Compose
+- **Backend**: Node.js + Express (Vercel Serverless Functions)
+- **Frontend**: React + Vite (Static hosting on Vercel)
+- **Job Queue**: Bull + Redis (Upstash Redis)
+- **Database**: PostgreSQL 15 (Neon)
+- **Deployment**: Vercel (Serverless + Static)
 
 ## Quick Start
+
+### Production URL
+
+```
+https://payment-gateway-h9.vercel.app
+```
+
+### Test Credentials
+
+```
+Email: test@example.com
+Password: test123
+API Key: key_test_abc123
+API Secret: secret_test_xyz789
+```
+
+### Try It Out
+
+1. **Login to Dashboard**
+   ```
+   https://payment-gateway-h9.vercel.app/login
+   ```
+
+2. **Create a Test Order**
+   ```
+   https://payment-gateway-h9.vercel.app/dashboard/checkout
+   ```
+
+3. **View Transactions**
+   ```
+   https://payment-gateway-h9.vercel.app/dashboard/transactions
+   ```
+
+4. **Configure Webhooks**
+   ```
+   https://payment-gateway-h9.vercel.app/dashboard/webhooks
+   ```
+
+## Local Development
 
 ### Prerequisites
 
@@ -47,6 +90,515 @@ A production-ready payment gateway system featuring merchant onboarding, async p
    ```
 
 3. **Check health**
+
+   ```bash
+   curl http://localhost:8000/health
+   ```
+
+4. **Check job queue status**
+   ```bash
+   curl http://localhost:8000/api/v1/queue/status
+   ```
+
+The application will be available at:
+
+- **API**: http://localhost:8000
+- **Dashboard**: http://localhost:3000
+- **Checkout (embedded)**: http://localhost:3000/dashboard/checkout
+- **Redis**: localhost:6379
+- **PostgreSQL**: localhost:5432
+
+## Environment Variables
+
+Create `.env` file in the root directory for local development:
+
+```env
+# Database
+DATABASE_URL=postgresql://gateway_user:gateway_pass@localhost:5432/payment_gateway
+
+# Server
+PORT=8000
+
+# Redis
+REDIS_HOST=localhost
+REDIS_PORT=6379
+
+# Test Configuration
+TEST_MODE=false
+TEST_PAYMENT_SUCCESS=true
+TEST_PROCESSING_DELAY=1000
+TEST_MERCHANT_EMAIL=test@example.com
+TEST_API_KEY=key_test_abc123
+TEST_API_SECRET=secret_test_xyz789
+```
+
+## API Documentation
+
+### Base URL
+
+**Production**: `https://payment-gateway-h9.vercel.app`  
+**Local**: `http://localhost:8000`
+
+### Test Credentials
+
+```
+Email: test@example.com
+API Key: key_test_abc123
+API Secret: secret_test_xyz789
+```
+
+### Authentication
+
+All API requests (except health check) require authentication headers:
+
+```http
+X-Api-Key: your_api_key
+X-Api-Secret: your_api_secret
+```
+
+### Core Endpoints
+
+#### 1. Health Check
+
+```http
+GET /api/v1/health
+
+Response:
+{
+  "status": "healthy",
+  "database": "connected",
+  "timestamp": "2026-01-21T04:15:00Z",
+  "environment": "production"
+}
+```
+
+#### 2. Authentication - Register
+
+```http
+POST /api/v1/auth/register
+
+Headers:
+  Content-Type: application/json
+
+Body:
+{
+  "name": "My Store",
+  "email": "store@example.com",
+  "password": "secure_password",
+  "confirmPassword": "secure_password"
+}
+
+Response:
+{
+  "message": "Registration successful",
+  "merchant": {
+    "id": "uuid",
+    "email": "store@example.com",
+    "apiKey": "key_xxx",
+    "apiSecret": "secret_xxx"
+  }
+}
+```
+
+#### 3. Authentication - Login
+
+```http
+POST /api/v1/auth/login
+
+Headers:
+  Content-Type: application/json
+
+Body:
+{
+  "email": "test@example.com",
+  "password": "test123"
+}
+
+Response:
+{
+  "message": "Login successful",
+  "merchant": {
+    "id": "uuid",
+    "name": "Test Merchant",
+    "email": "test@example.com",
+    "apiKey": "key_test_abc123",
+    "apiSecret": "secret_test_xyz789"
+  }
+}
+```
+
+#### 4. Create Order
+
+```http
+POST /api/v1/orders
+
+Headers:
+  X-Api-Key: key_test_abc123
+  X-Api-Secret: secret_test_xyz789
+  Content-Type: application/json
+
+Body:
+{
+  "amount": 50000,
+  "currency": "INR",
+  "receipt": "receipt_123",
+  "notes": {
+    "key": "value"
+  }
+}
+
+Response:
+{
+  "id": "order_xxxx",
+  "merchant_id": "uuid",
+  "amount": 50000,
+  "currency": "INR",
+  "status": "created",
+  "created_at": "2026-01-21T04:15:00Z"
+}
+```
+
+#### 5. Create Payment
+
+```http
+POST /api/v1/payments
+
+Headers:
+  X-Api-Key: key_test_abc123
+  X-Api-Secret: secret_test_xyz789
+  Content-Type: application/json
+
+Body:
+{
+  "order_id": "order_xxxx",
+  "method": "upi",
+  "vpa": "user@upi"
+}
+
+Response:
+{
+  "id": "pay_xxxx",
+  "order_id": "order_xxxx",
+  "amount": 50000,
+  "method": "upi",
+  "status": "created",
+  "created_at": "2026-01-21T04:15:00Z"
+}
+```
+
+#### 6. Get Payments
+
+```http
+GET /api/v1/payments?limit=50&skip=0
+
+Headers:
+  X-Api-Key: key_test_abc123
+  X-Api-Secret: secret_test_xyz789
+
+Response:
+{
+  "count": 1,
+  "total": 1,
+  "payments": [
+    {
+      "id": "pay_xxxx",
+      "amount": 50000,
+      "status": "success",
+      "method": "upi",
+      "created_at": "2026-01-21T04:15:00Z"
+    }
+  ]
+}
+```
+
+#### 7. Get Refunds
+
+```http
+GET /api/v1/refunds?limit=50&skip=0
+
+Headers:
+  X-Api-Key: key_test_abc123
+  X-Api-Secret: secret_test_xyz789
+
+Response:
+{
+  "count": 0,
+  "total": 0,
+  "refunds": []
+}
+```
+
+#### 8. Create Refund
+
+```http
+POST /api/v1/refunds
+
+Headers:
+  X-Api-Key: key_test_abc123
+  X-Api-Secret: secret_test_xyz789
+  Content-Type: application/json
+
+Body:
+{
+  "payment_id": "pay_xxxx",
+  "amount": 25000,
+  "reason": "Customer requested"
+}
+
+Response:
+{
+  "id": "refund_xxxx",
+  "payment_id": "pay_xxxx",
+  "amount": 25000,
+  "status": "created",
+  "created_at": "2026-01-21T04:15:00Z"
+}
+```
+
+#### 9. Webhook Configuration - Get
+
+```http
+GET /api/v1/webhooks/config
+
+Headers:
+  X-Api-Key: key_test_abc123
+  X-Api-Secret: secret_test_xyz789
+
+Response:
+{
+  "webhook_url": "https://example.com/webhooks"
+}
+```
+
+#### 10. Webhook Configuration - Update
+
+```http
+PUT /api/v1/webhooks/config
+
+Headers:
+  X-Api-Key: key_test_abc123
+  X-Api-Secret: secret_test_xyz789
+  Content-Type: application/json
+
+Body:
+{
+  "webhook_url": "https://example.com/webhooks"
+}
+
+Response:
+{
+  "webhook_url": "https://example.com/webhooks"
+}
+```
+
+## Deployment
+
+### Production (Vercel)
+
+The application is automatically deployed on every git push to the `main` branch.
+
+**URL**: https://payment-gateway-h9.vercel.app
+
+#### Manual Redeploy
+
+```bash
+vercel deploy --prod
+```
+
+#### Initialize Database (First Time)
+
+```bash
+curl -X POST https://payment-gateway-h9.vercel.app/api/v1/test/init-db \
+  -H "Content-Type: application/json"
+```
+
+#### Seed Test Merchant (If Needed)
+
+```bash
+curl -X POST https://payment-gateway-h9.vercel.app/api/v1/auth/seed-test \
+  -H "Content-Type: application/json"
+```
+
+### Local Development with Docker
+
+```bash
+docker-compose up -d
+```
+
+Services:
+- **API**: http://localhost:8000
+- **Dashboard**: http://localhost:3000
+- **PostgreSQL**: localhost:5432
+- **Redis**: localhost:6379
+
+## Database Schema
+
+### Tables
+
+- **merchants**: Merchant accounts with API credentials
+- **orders**: Customer orders for payment processing
+- **payments**: Payment transactions (UPI, Card, etc.)
+- **refunds**: Refund transactions
+- **webhook_logs**: Webhook delivery attempts and status
+- **idempotency_keys**: Request deduplication
+
+### Indexes
+
+- `idx_orders_merchant_id`: Order lookup by merchant
+- `idx_payments_order_id`: Payment lookup by order
+- `idx_payments_status`: Payment status filtering
+- `idx_refunds_payment_id`: Refund lookup by payment
+- `idx_webhook_logs_merchant_id`: Webhook log lookup
+- `idx_webhook_logs_status`: Status filtering for retries
+- `idx_idempotency_keys_merchant_request`: Duplicate prevention
+
+## Testing
+
+### Create a Test Order and Make Payment
+
+```bash
+# 1. Create order
+curl -X POST https://payment-gateway-h9.vercel.app/api/v1/orders \
+  -H "X-Api-Key: key_test_abc123" \
+  -H "X-Api-Secret: secret_test_xyz789" \
+  -H "Content-Type: application/json" \
+  -d '{"amount": 50000, "currency": "INR"}'
+
+# 2. Create payment (use order ID from response)
+curl -X POST https://payment-gateway-h9.vercel.app/api/v1/payments \
+  -H "X-Api-Key: key_test_abc123" \
+  -H "X-Api-Secret: secret_test_xyz789" \
+  -H "Content-Type: application/json" \
+  -d '{"order_id": "order_xxxx", "method": "upi", "vpa": "user@upi"}'
+
+# 3. Get payment status (use payment ID from response)
+curl -X GET "https://payment-gateway-h9.vercel.app/api/v1/payments/pay_xxxx" \
+  -H "X-Api-Key: key_test_abc123" \
+  -H "X-Api-Secret: secret_test_xyz789"
+```
+
+### Using the Dashboard
+
+1. Login: https://payment-gateway-h9.vercel.app/login
+2. Email: test@example.com
+3. Password: test123
+
+## Architecture
+
+### Vercel Production
+
+```
+Frontend (React + Vite)
+├── Static assets served from Vercel CDN
+└── SPA with client-side routing
+
+API (Express.js)
+├── Serverless function at /api/v1.js
+├── Routes: auth, payments, orders, refunds, webhooks
+└── Database: Neon PostgreSQL
+    └── Cache: Upstash Redis
+
+External Services
+├── Neon: PostgreSQL database (ap-southeast-2)
+└── Upstash: Redis cache (Global)
+```
+
+### Local Development
+
+```
+Docker Compose
+├── PostgreSQL 15 (port 5432)
+├── Redis 7 (port 6379)
+├── Express API (port 8000)
+│   ├── Routes: auth, payments, orders, refunds, webhooks
+│   └── Worker: Bull queues for async processing
+└── React Dashboard (port 3000)
+    ├── Authentication
+    ├── Checkout (embedded)
+    ├── Transactions
+    ├── Refunds
+    └── Webhooks
+```
+
+## File Structure
+
+```
+payment-gateway/
+├── api/                          # Vercel serverless functions
+│   ├── v1.js                    # Main API handler
+│   └── package.json             # Function dependencies
+├── backend/                      # Express.js API
+│   ├── src/
+│   │   ├── routes/              # API endpoints
+│   │   ├── services/            # Business logic
+│   │   ├── middleware/          # Authentication, error handling
+│   │   ├── queues/              # Bull job queues
+│   │   ├── utils/               # Utilities
+│   │   ├── config/              # Configuration
+│   │   ├── constants/           # Constants
+│   │   ├── db.js                # Database connection
+│   │   ├── index.js             # Express app
+│   │   ├── init.js              # Database initialization
+│   │   └── worker.js            # Queue worker
+│   ├── schema.sql               # Database schema
+│   ├── package.json
+│   └── Dockerfile
+├── frontend/                     # React + Vite
+│   ├── src/
+│   │   ├── pages/               # React pages
+│   │   ├── config.js            # API configuration
+│   │   ├── App.jsx              # Main app
+│   │   └── main.jsx             # Entry point
+│   ├── dist/                    # Built static files
+│   ├── package.json
+│   ├── vite.config.js
+│   └── Dockerfile
+├── vercel.json                  # Vercel configuration
+├── docker-compose.yml           # Local development
+├── README.md                    # This file
+├── VERCEL_SETUP_COMPLETE.md    # Vercel setup guide
+├── ARCHITECTURE.md              # System architecture
+└── start.sh                     # Local startup script
+```
+
+## Support & Troubleshooting
+
+### Common Issues
+
+**1. Database connection error**
+```
+Check DATABASE_URL environment variable in Vercel or .env file
+```
+
+**2. Redis connection error**
+```
+Check REDIS_URL environment variable
+```
+
+**3. API returning 404**
+```
+Verify routes are properly imported in api/v1.js
+Check frontend is using correct API_URL from config.js
+```
+
+**4. Webhook delivery failing**
+```
+Verify webhook_url is set in dashboard
+Check merchant has valid API key/secret
+Monitor webhook logs in /dashboard/webhooks
+```
+
+## Contributing
+
+1. Create a feature branch
+2. Make your changes
+3. Test locally with docker-compose
+4. Push to GitHub
+5. Vercel will auto-deploy on merge to main
+
+## License
+
+MIT
 
    ```bash
    curl http://localhost:8000/health

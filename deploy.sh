@@ -1,9 +1,10 @@
 #!/bin/bash
 
 # Payment Gateway Vercel Deployment Script
+# This script handles deployment to Vercel production
 
-echo "🚀 Payment Gateway - Vercel Deployment Script"
-echo "=============================================="
+echo "🚀 Payment Gateway - Vercel Deployment"
+echo "======================================"
 echo ""
 
 cd "$(dirname "$0")"
@@ -22,32 +23,51 @@ echo ""
 echo "✅ Authenticated with Vercel"
 echo ""
 
-# Function to deploy a project
-deploy_project() {
-    local name=$1
-    local root=$2
-    
-    echo "🔄 Deploying: $name"
-    echo "Root directory: $root"
-    echo ""
-    
-    cd "$root"
-    
-    # Install dependencies
-    echo "📦 Installing dependencies..."
-    npm install
-    
-    # Deploy
-    echo "🚀 Deploying to Vercel..."
-    vercel --prod --name "$name" --no-git-credentials
-    
-    cd - > /dev/null
-    echo ""
-}
+# Build frontend
+echo "📦 Building frontend..."
+echo "======================"
+npm -C frontend run build
 
-# Deploy backend first
-echo "📋 Step 1: Deploy Backend API"
-echo "=============================="
+if [ $? -ne 0 ]; then
+    echo "❌ Frontend build failed"
+    exit 1
+fi
+
+echo "✅ Frontend built successfully"
+echo ""
+
+# Deploy to production
+echo "🚀 Deploying to Vercel Production..."
+echo "====================================="
+echo ""
+
+vercel deploy --prod --yes
+
+if [ $? -ne 0 ]; then
+    echo "❌ Deployment failed"
+    exit 1
+fi
+
+echo ""
+echo "✅ Deployment successful!"
+echo ""
+
+echo "🌐 Live URL: https://payment-gateway-h9.vercel.app"
+echo ""
+
+echo "🧪 Test the deployment:"
+echo "   - Visit: https://payment-gateway-h9.vercel.app/login"
+echo "   - Email: test@example.com"
+echo "   - Password: test123"
+echo ""
+
+echo "📊 Monitor deployment:"
+echo "   - Vercel: https://vercel.com/nathimike102s-projects/payment-gateway-h9"
+echo ""
+
+echo "======================================"
+echo "Deployment complete!"
+echo "======================================"
 deploy_project "payment-gateway-api" "backend"
 
 # Deploy frontend
