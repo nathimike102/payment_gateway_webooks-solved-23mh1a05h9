@@ -74,7 +74,7 @@ function Checkout() {
       setOrderLoading(true)
       setErrorMessage('')
       const amountInPaise = Math.round(parseFloat(orderAmount) * 100)
-      const response = await fetch(`${API_URL}/api/v1/orders`, {
+      const response = await fetch(`${API_URL}/orders`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,7 +103,7 @@ function Checkout() {
     e.preventDefault()
     setState('processing')
     try {
-      const response = await fetch(`${API_URL}/api/v1/payments`, {
+      const response = await fetch(`${API_URL}/payments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ function Checkout() {
     setState('processing')
     const [month, year] = expiry.split('/')
     try {
-      const response = await fetch(`${API_URL}/api/v1/payments`, {
+      const response = await fetch(`${API_URL}/payments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -164,7 +164,7 @@ function Checkout() {
     const poll = setInterval(async () => {
       attempts++
       try {
-        const response = await fetch(`${API_URL}/api/v1/payments/${paymentId}`, {
+        const response = await fetch(`${API_URL}/payments/${paymentId}`, {
           method: 'GET',
           headers: {
             'X-Api-Key': apiKey,

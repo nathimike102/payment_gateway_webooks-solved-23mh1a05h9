@@ -11,6 +11,9 @@ const paymentsRoutes = require('../backend/src/routes/payments');
 const ordersRoutes = require('../backend/src/routes/orders');
 const publicRoutes = require('../backend/src/routes/public');
 const testRoutes = require('../backend/src/routes/test');
+const webhooksRoutes = require('../backend/src/routes/webhooks');
+const refundsRoutes = require('../backend/src/routes/refunds');
+const healthRoutes = require('../backend/src/routes/health');
 
 const app = express();
 
@@ -41,6 +44,9 @@ app.use(paymentsRoutes);
 app.use(ordersRoutes);
 app.use(publicRoutes);
 app.use(testRoutes);
+app.use(webhooksRoutes);
+app.use(refundsRoutes);
+app.use(healthRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
