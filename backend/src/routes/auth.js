@@ -6,7 +6,7 @@ const bcrypt = require('bcrypt');
 const router = express.Router();
 
 // Register new merchant
-router.post('/api/v1/auth/register', async (req, res) => {
+router.post('/register', async (req, res) => {
     try {
         const { name, email, password, confirmPassword } = req.body;
 
@@ -44,7 +44,7 @@ router.post('/api/v1/auth/register', async (req, res) => {
 });
 
 // Login merchant
-router.post('/api/v1/auth/login', async (req, res) => {
+router.post('/login', async (req, res) => {
     try {
         const { email, password } = req.body;
 
@@ -70,7 +70,7 @@ router.post('/api/v1/auth/login', async (req, res) => {
 });
 
 // Seed test merchant (for production testing only)
-router.post('/api/v1/auth/seed-test', async (req, res) => {
+router.post('/seed-test', async (req, res) => {
     try {
         const db = require('../db');
         const testMerchantId = '550e8400-e29b-41d4-a716-446655440000';
