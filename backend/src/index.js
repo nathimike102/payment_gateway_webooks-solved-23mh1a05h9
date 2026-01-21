@@ -31,11 +31,11 @@ app.use(express.static(frontendDist));
 app.use(healthRoutes);
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1', publicRoutes);
-app.use(orderRoutes);
-app.use(paymentRoutes);
-app.use(refundRoutes);
-app.use(testRoutes);
-app.use(webhookRoutes);
+app.use('/api/v1/orders', orderRoutes);
+app.use('/api/v1/payments', paymentRoutes);
+app.use('/api/v1/refunds', refundRoutes);
+app.use('/api/v1/test', testRoutes);
+app.use('/api/v1/webhooks', webhookRoutes);
 
 // SPA fallback: serve index.html for all non-API routes
 app.get('*', (req, res) => {

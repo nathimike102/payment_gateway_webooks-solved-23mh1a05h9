@@ -4,7 +4,7 @@ const { webhookQueue, paymentQueue, refundQueue } = require('../queues');
 
 const router = express.Router();
 
-router.get('/health', async (req, res) => {
+const healthHandler = async (req, res) => {
     try {
         // Test database connection
         await db.query('SELECT 1');
@@ -22,7 +22,11 @@ router.get('/health', async (req, res) => {
             timestamp: new Date().toISOString()
         });
     }
-});
+};
+
+// Support both paths (direct access and via proxy)
+router.get('/health', healthHandler);
+router.get('/api/v1/health', healthHandler);
 
 router.get('/api/v1/queue/status', async (req, res) => {
     try {

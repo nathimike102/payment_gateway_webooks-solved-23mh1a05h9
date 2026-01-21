@@ -49,16 +49,19 @@ API Secret: secret_test_xyz789
 ### Try It Out
 
 1. **Login to Dashboard**
+
    ```
    https://payment-gateway-h9.vercel.app/login
    ```
 
 2. **Create a Test Order**
+
    ```
    https://payment-gateway-h9.vercel.app/dashboard/checkout
    ```
 
 3. **View Transactions**
+
    ```
    https://payment-gateway-h9.vercel.app/dashboard/transactions
    ```
@@ -426,6 +429,7 @@ docker-compose up -d
 ```
 
 Services:
+
 - **API**: http://localhost:8000
 - **Dashboard**: http://localhost:3000
 - **PostgreSQL**: localhost:5432
@@ -566,22 +570,26 @@ payment-gateway/
 ### Common Issues
 
 **1. Database connection error**
+
 ```
 Check DATABASE_URL environment variable in Vercel or .env file
 ```
 
 **2. Redis connection error**
+
 ```
 Check REDIS_URL environment variable
 ```
 
 **3. API returning 404**
+
 ```
 Verify routes are properly imported in api/v1.js
 Check frontend is using correct API_URL from config.js
 ```
 
 **4. Webhook delivery failing**
+
 ```
 Verify webhook_url is set in dashboard
 Check merchant has valid API key/secret
@@ -600,9 +608,9 @@ Monitor webhook logs in /dashboard/webhooks
 
 MIT
 
-   ```bash
-   curl http://localhost:8000/health
-   ```
+```bash
+curl http://localhost:8000/health
+```
 
 4. **Check job queue status**
    ```bash

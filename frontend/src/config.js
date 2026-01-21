@@ -1,3 +1,5 @@
-// Use localhost for development, relative path for production
-const isDevelopment = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-export const API_URL = import.meta.env.VITE_API_URL || (isDevelopment ? 'http://localhost:8000/api/v1' : '/api/v1');
+// Use relative path for API calls (works for both Docker and production)
+// Docker nginx proxy will route /api/* to http://api:8000
+// Production Vercel routes /api/v1/* to serverless function
+export const API_URL = '/api/v1';
+
