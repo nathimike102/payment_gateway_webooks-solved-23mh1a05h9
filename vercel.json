@@ -9,6 +9,10 @@
       "dest": "/api/v1.js"
     },
     {
+      "src": "/assets/(.*)",
+      "dest": "/assets/$1"
+    },
+    {
       "src": "/.*",
       "dest": "/index.html"
     }
