@@ -12,7 +12,7 @@ const {
 const router = express.Router();
 
 // Get all payments for merchant
-router.get('/api/v1/payments', authenticateApiKey, async (req, res) => {
+router.get('/payments', authenticateApiKey, async (req, res) => {
     try {
         const { limit = 50, skip = 0 } = req.query;
         
@@ -113,7 +113,7 @@ async function processPayment(paymentId, method) {
 }
 
 // Create payment
-router.post('/api/v1/payments', authenticateApiKey, async (req, res) => {
+router.post('/payments', authenticateApiKey, async (req, res) => {
     try {
         const { order_id, method, vpa, card } = req.body;
 
@@ -265,7 +265,7 @@ router.post('/api/v1/payments', authenticateApiKey, async (req, res) => {
 });
 
 // Get payment
-router.get('/api/v1/payments/:payment_id', authenticateApiKey, async (req, res) => {
+router.get('/payments/:payment_id', authenticateApiKey, async (req, res) => {
     try {
         const { payment_id } = req.params;
 
@@ -321,7 +321,7 @@ router.get('/api/v1/payments/:payment_id', authenticateApiKey, async (req, res) 
 });
 
 // Create payment public (no auth required)
-router.post('/api/v1/payments/public', async (req, res) => {
+router.post('/payments/public', async (req, res) => {
     try {
         const { order_id, method, vpa, card } = req.body;
 
@@ -463,7 +463,7 @@ router.post('/api/v1/payments/public', async (req, res) => {
 });
 
 // Get payment public (no auth, for polling)
-router.get('/api/v1/payments/:payment_id/public', async (req, res) => {
+router.get('/payments/:payment_id/public', async (req, res) => {
     try {
         const { payment_id } = req.params;
 

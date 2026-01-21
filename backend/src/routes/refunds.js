@@ -9,7 +9,7 @@ const crypto = require('crypto');
 const router = express.Router();
 
 // Create a refund
-router.post('/api/v1/refunds', authenticateApiKey, async (req, res) => {
+router.post('/refunds', authenticateApiKey, async (req, res) => {
     try {
         const { payment_id, amount, reason, idempotency_key } = req.body;
         const merchantId = req.merchant.id;
@@ -108,7 +108,7 @@ router.post('/api/v1/refunds', authenticateApiKey, async (req, res) => {
 });
 
 // Get all refunds for merchant
-router.get('/api/v1/refunds', authenticateApiKey, async (req, res) => {
+router.get('/refunds', authenticateApiKey, async (req, res) => {
     try {
         const { limit = 50, skip = 0, payment_id } = req.query;
         const merchantId = req.merchant.id;
@@ -146,7 +146,7 @@ router.get('/api/v1/refunds', authenticateApiKey, async (req, res) => {
 });
 
 // Get refund by ID
-router.get('/api/v1/refunds/:id', authenticateApiKey, async (req, res) => {
+router.get('/refunds/:id', authenticateApiKey, async (req, res) => {
     try {
         const result = await db.query(
             'SELECT * FROM refunds WHERE id = $1 AND merchant_id = $2',

@@ -6,7 +6,7 @@ const { generateOrderId } = require('../utils/idGenerator');
 const router = express.Router();
 
 // Get all orders for merchant
-router.get('/api/v1/orders', authenticateApiKey, async (req, res) => {
+router.get('/', authenticateApiKey, async (req, res) => {
     try {
         const { limit = 50, skip = 0 } = req.query;
         
@@ -51,7 +51,7 @@ router.get('/api/v1/orders', authenticateApiKey, async (req, res) => {
 });
 
 // Create order
-router.post('/api/v1/orders', authenticateApiKey, async (req, res) => {
+router.post('/', authenticateApiKey, async (req, res) => {
     try {
         const { amount, currency, receipt, notes } = req.body;
 
@@ -117,7 +117,7 @@ router.post('/api/v1/orders', authenticateApiKey, async (req, res) => {
 });
 
 // Get order
-router.get('/api/v1/orders/:order_id', authenticateApiKey, async (req, res) => {
+router.get('/:order_id', authenticateApiKey, async (req, res) => {
     try {
         const { order_id } = req.params;
 
@@ -160,7 +160,7 @@ router.get('/api/v1/orders/:order_id', authenticateApiKey, async (req, res) => {
 });
 
 // Get order public (no auth required)
-router.get('/api/v1/orders/:order_id/public', async (req, res) => {
+router.get('/:order_id/public', async (req, res) => {
     try {
         const { order_id } = req.params;
 

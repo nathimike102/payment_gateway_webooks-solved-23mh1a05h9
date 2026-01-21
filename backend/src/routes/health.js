@@ -28,7 +28,7 @@ const healthHandler = async (req, res) => {
 router.get('/health', healthHandler);
 router.get('/api/v1/health', healthHandler);
 
-router.get('/api/v1/queue/status', async (req, res) => {
+router.get('/queue/status', async (req, res) => {
     try {
         const stats = {
             webhooks: {

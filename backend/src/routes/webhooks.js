@@ -15,7 +15,7 @@ const isValidUrl = (value) => {
 };
 
 // Get the configured webhook URL for the authenticated merchant
-router.get('/api/v1/webhooks/config', authenticateApiKey, async (req, res) => {
+router.get('/webhooks/config', authenticateApiKey, async (req, res) => {
     try {
         const result = await db.query(
             'SELECT webhook_url FROM merchants WHERE id = $1',
@@ -31,7 +31,7 @@ router.get('/api/v1/webhooks/config', authenticateApiKey, async (req, res) => {
 });
 
 // Update webhook URL for the authenticated merchant
-router.put('/api/v1/webhooks/config', authenticateApiKey, async (req, res) => {
+router.put('/webhooks/config', authenticateApiKey, async (req, res) => {
     try {
         const { webhook_url } = req.body;
 
@@ -52,7 +52,7 @@ router.put('/api/v1/webhooks/config', authenticateApiKey, async (req, res) => {
 });
 
 // Fetch recent webhook delivery logs for the merchant
-router.get('/api/v1/webhooks/logs', authenticateApiKey, async (req, res) => {
+router.get('/webhooks/logs', authenticateApiKey, async (req, res) => {
     try {
         const limit = Math.min(parseInt(req.query.limit, 10) || 20, 100);
         const skip = parseInt(req.query.skip, 10) || 0;

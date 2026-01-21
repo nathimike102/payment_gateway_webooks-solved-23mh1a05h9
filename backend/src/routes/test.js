@@ -6,7 +6,7 @@ const path = require('path');
 const router = express.Router();
 
 // Initialize database schema
-router.post('/api/v1/test/init-db', async (req, res) => {
+router.post('/test/init-db', async (req, res) => {
     try {
         // Read schema.sql
         const schemaPath = path.join(__dirname, '../../schema.sql');
@@ -30,7 +30,7 @@ router.post('/api/v1/test/init-db', async (req, res) => {
     }
 });
 
-router.get('/api/v1/test/merchant', async (req, res) => {
+router.get('/test/merchant', async (req, res) => {
     try {
         const result = await db.query(
             'SELECT id, email, api_key FROM merchants WHERE email = $1',
