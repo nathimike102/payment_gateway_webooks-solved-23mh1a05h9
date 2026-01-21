@@ -1,33 +1,21 @@
-# Build stage - Frontend
-FROM node:18-alpine AS frontend-builder
-WORKDIR /app
-COPY package*.json ./
-COPY frontend/package*.json frontend/
-RUN npm install && npm --prefix frontend install
+# This Dockerfile is for local development with docker-compose
+# For production deployment, use Vercel: https://payment-gateway-h9.vercel.app
+# The backend/Dockerfile and frontend/Dockerfile are used instead
 
-COPY frontend ./frontend
-RUN npm --prefix frontend run build
+# This file is kept for reference only - not used in current setup
+# Use docker-compose.yml for local development instead
 
-# Build stage - Backend
-FROM node:18-alpine AS backend-builder
+FROM node:18-alpine AS backend-build
 WORKDIR /app
-COPY package*.json ./
 COPY backend/package*.json backend/
-RUN npm install && npm --prefix backend install
+RUN npm --prefix backend ci --only=production
 
-# Runtime stage
 FROM node:18-alpine
 WORKDIR /app
-
-# Install production dependencies
-COPY package*.json ./
-COPY backend/package*.json backend/
-RUN npm install --only=production && npm --prefix backend install --only=production
-
-# Copy backend source
+COPY --from=backend-build /app/node_modules ./backend/node_modules
 COPY backend ./backend
-
-# Copy built frontend from builder
+EXPOSE 8000
+CMD ["node", "backend/src/index.js"]
 COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
 
 # Copy public assets (SDK)

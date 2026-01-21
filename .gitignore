@@ -10,6 +10,9 @@ validate.sh
 
 # Environment files
 .env
+.env.production
+.env.local
+.env.*.local
 
 # IDE files
 .idea/
@@ -27,6 +30,20 @@ node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Build outputs
+dist/
+.next/
+out/
+
+# Vercel
+.vercel/
+
+# Docker
+.dockerignore
+
+# Cache
+.turbo/
 
 # Python
 __pycache__/

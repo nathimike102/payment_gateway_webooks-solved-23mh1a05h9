@@ -15,4 +15,6 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 
+# For local development with docker-compose
+# For production, frontend is served as static files from Vercel CDN
 CMD ["nginx", "-g", "daemon off;"]

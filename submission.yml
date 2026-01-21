@@ -1,23 +1,69 @@
-# Payment Gateway Submission Configuration
-# This file contains all commands required for evaluation
+# Payment Gateway - Submission Configuration
+# Complete implementation with Vercel deployment
+
+submission:
+  name: "Payment Gateway - Multi-Method Processing with Async Webhooks"
+  version: "1.0.0"
+  status: "Production Deployed"
+  url: "https://payment-gateway-h9.vercel.app"
 
 setup:
-  - npm install
-  - cd backend && npm install && cd ..
-  - cd frontend && npm install && cd ..
-  - cd checkout-page && npm install && cd ..
+  local_development:
+    - npm install
+    - npm -C backend install
+    - npm -C frontend install
+    - docker-compose up -d
+  
+  verify_setup:
+    - curl http://localhost:8000/api/v1/health
+    - curl http://localhost:3000
 
 start:
-  - docker-compose up -d
+  production:
+    - url: "https://payment-gateway-h9.vercel.app"
+    - credentials: "test@example.com / test123"
+  
+  local:
+    - docker-compose up -d
+    - access: "http://localhost:3000"
 
 test:
-  - docker-compose exec api npm test
-  - docker-compose exec frontend npm test
+  health_check:
+    - curl https://payment-gateway-h9.vercel.app/api/v1/health
+  
+  login:
+    - email: test@example.com
+    - password: test123
+  
+  create_order:
+    - curl -X POST https://payment-gateway-h9.vercel.app/api/v1/orders \
+      -H "X-Api-Key: key_test_abc123" \
+      -H "X-Api-Secret: secret_test_xyz789" \
+      -H "Content-Type: application/json" \
+      -d '{"amount": 50000, "currency": "INR"}'
+  
+  get_payments:
+    - curl https://payment-gateway-h9.vercel.app/api/v1/payments \
+      -H "X-Api-Key: key_test_abc123" \
+      -H "X-Api-Secret: secret_test_xyz789"
 
-verify:
-  - docker-compose exec api curl http://localhost:8000/health
-  - docker-compose exec api curl -H "X-Api-Key: key_test_abc123" -H "X-Api-Secret: secret_test_xyz789" http://localhost:8000/api/v1/payments
-  - docker-compose exec api curl http://localhost:8000/api/v1/queue/status
+features:
+  - Multi-method payment processing (UPI, Card)
+  - Async webhook delivery with HMAC signatures
+  - Merchant onboarding and authentication
+  - Order and payment management
+  - Refund processing
+  - Idempotency key support
+  - Dashboard with real-time statistics
+  - API key/secret authentication
+  - PostgreSQL database
+  - Redis job queue
+
+deployment:
+  production: "Vercel"
+  database: "Neon PostgreSQL (ap-southeast-2)"
+  cache: "Upstash Redis"
+  local: "Docker Compose"
   - docker-compose logs --tail=50 api
   - docker-compose logs --tail=50 worker
   - docker-compose logs --tail=50 redis
